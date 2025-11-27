@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
 import { PoseCategory, Pose } from './models/pose.model';
 import { PoseDetailModalComponent } from './pose-detail-modal.component';
 
@@ -7,7 +6,7 @@ import { PoseDetailModalComponent } from './pose-detail-modal.component';
   selector: 'app-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgOptimizedImage, PoseDetailModalComponent],
+  imports: [PoseDetailModalComponent],
 })
 export class AppComponent {
   selectedPose = signal<Pose | null>(null);

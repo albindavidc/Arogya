@@ -1,11 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-g">
+  <meta charset="utf-8">
   <title>Arogya</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0A0A0F">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,6 +17,75 @@
     }
     h1, h2, h3 {
       font-family: 'Lora', serif;
+    }
+    .holo-border-container::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 1px;
+        border-radius: 12px; /* This should match the inner element's border-radius */
+        background: linear-gradient(135deg, #E8A0BF, #B4A0E8, #A0E8C8);
+        -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .group:hover .holo-border-container::before {
+        opacity: 1;
+    }
+
+    /* --- Splash Screen Styles --- */
+    #splash-screen {
+      transition: opacity 0.5s ease-out;
+    }
+    body.loaded #splash-screen {
+      opacity: 0;
+      pointer-events: none;
+    }
+    @keyframes logo-enter {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes text-enter {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes breathe {
+      0%, 100% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 15px rgba(180, 160, 232, 0.4));
+      }
+      50% { 
+        transform: scale(1.05); 
+        filter: drop-shadow(0 0 30px rgba(180, 160, 232, 0.7));
+      }
+    }
+    @keyframes ripple {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(2.5); opacity: 0; }
+    }
+    .splash-logo {
+      animation: logo-enter 0.8s ease-out forwards, breathe 4s ease-in-out 0.8s infinite;
+    }
+    .splash-title {
+      animation: text-enter 0.8s ease-out 0.3s forwards;
+    }
+    .ripple-loader div {
+      position: absolute;
+      border: 2px solid #B4A0E8;
+      opacity: 1;
+      border-radius: 50%;
+      animation: ripple 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+      filter: drop-shadow(0 0 5px rgba(180, 160, 232, 0.5));
+    }
+    .ripple-loader div:nth-child(2) {
+      animation-delay: -0.5s;
+    }
+     .ripple-loader div:nth-child(3) {
+      animation-delay: -1s;
     }
   </style>
 <script type="importmap">
@@ -35,7 +105,67 @@
 }
 </script>
 </head>
-<body class="bg-stone-50 text-stone-800 antialiased">
+<body class="bg-[#0A0A0F] text-[#B8B8C4] antialiased">
+
+  <!-- Splash Screen -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0A0A0F]">
+      <div class="relative w-32 h-32 flex items-center justify-center">
+        <!-- Ripple Loader -->
+        <div class="ripple-loader">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <!-- Logo -->
+        <svg class="splash-logo w-32 h-32 z-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="aurora" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#E8A0BF" />
+              <stop offset="35%" style="stop-color:#B4A0E8" />
+              <stop offset="65%" style="stop-color:#A0C8E8" />
+              <stop offset="100%" style="stop-color:#A0E8C8" />
+            </linearGradient>
+          </defs>
+          <path fill="url(#aurora)" d="M50,5 C55,15 60,25 60,35 C60,45 50,55 50,55 C50,55 40,45 40,35 C40,25 45,15 50,5 Z M25,30 C35,40 45,50 45,60 C45,70 35,80 35,80 C35,80 25,70 25,60 C25,50 30,40 25,30 Z M75,30 C65,40 55,50 55,60 C55,70 65,80 65,80 C65,80 75,70 75,60 C75,50 70,40 75,30 Z M50,65 C55,75 60,85 60,95 L40,95 C40,85 45,75 50,65 Z"/>
+        </svg>
+      </div>
+      <h1 class="splash-title text-4xl mt-6 pb-2" style="background: linear-gradient(135deg, #E8A0BF 0%, #B4A0E8 50%, #A0E8C8 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">Arogya</h1>
+  </div>
+  
   <app-root></app-root>
+  
+  <script>
+    const startTime = Date.now();
+
+    function hideSplashScreen() {
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = 3000 - elapsedTime;
+
+      if (remainingTime > 0) {
+        setTimeout(() => {
+          document.body.classList.add('loaded');
+        }, remainingTime);
+      } else {
+        document.body.classList.add('loaded');
+      }
+    }
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            hideSplashScreen(); // Hide splash after SW is registered
+          })
+          .catch(err => {
+            console.log('ServiceWorker registration failed: ', err);
+            hideSplashScreen(); // Also hide splash if SW fails
+          });
+      });
+    } else {
+        hideSplashScreen(); // Hide splash if SW is not supported
+    }
+  </script>
 </body>
 </html>
