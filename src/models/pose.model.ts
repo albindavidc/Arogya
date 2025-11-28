@@ -1,3 +1,11 @@
+export interface FrequencyDetail {
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  duration?: string;
+  reps?: string;
+  sets?: string;
+  frequency: string;
+}
+
 export interface Pose {
   sanskritName: string;
   englishName: string;
@@ -5,7 +13,7 @@ export interface Pose {
   benefit: string;
   imageUrl: string;
   howToDo: string[];
-  howManyTimes: string;
+  frequency: FrequencyDetail[];
   why: string[];
 }
 

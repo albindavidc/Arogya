@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, computed } from '@angular/core';
 import { PoseCategory, Pose } from './models/pose.model';
 import { PoseDetailModalComponent } from './pose-detail-modal.component';
 
@@ -9,8 +9,6 @@ import { PoseDetailModalComponent } from './pose-detail-modal.component';
   imports: [PoseDetailModalComponent],
 })
 export class AppComponent {
-  selectedPose = signal<Pose | null>(null);
-
   readonly poseCategories = signal<PoseCategory[]>([
     {
       id: 'inversion',
@@ -29,7 +27,11 @@ export class AppComponent {
             "Raise your legs until they are perpendicular to the floor, keeping your torso straight.",
             "Press your sternum towards your chin. Hold the pose, breathing deeply."
           ],
-          howManyTimes: "Hold for 30 seconds to 2 minutes, once per session.",
+          frequency: [
+            { level: 'Beginner', duration: '30 seconds', sets: '1', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '1 minute', sets: '1', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '2-3 minutes', sets: '1', reps: '1', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Thyroid Health: Stimulates the thyroid and parathyroid glands, regulating metabolism.",
             "Circulation: Improves blood flow to the brain and upper body.",
@@ -49,7 +51,11 @@ export class AppComponent {
             "Slowly lift your feet off the floor, one at a time or together, and extend your legs upwards.",
             "Keep your core engaged and body in a straight line."
           ],
-          howManyTimes: "Advanced pose. Start with 30 seconds, building up to 5 minutes. Max 2 times a day.",
+          frequency: [
+            { level: 'Beginner', duration: 'Up to 30 secs (with wall support)', sets: '1', reps: '1', frequency: 'Once daily' },
+            { level: 'Intermediate', duration: '1-2 minutes', sets: '1', reps: '1', frequency: 'Once daily' },
+            { level: 'Advanced', duration: '3-5 minutes', sets: '1', reps: '1', frequency: 'Once or twice daily' }
+          ],
           why: [
             "Brain & Nervous System: Increases blood flow to the brain, enhancing focus, memory, and mental clarity. Reduces stress & anxiety.",
             "Hormones & Energy: Stimulates pituitary and pineal glands, improving energy levels, mood, and metabolism.",
@@ -68,7 +74,11 @@ export class AppComponent {
             "Keep your back straight and supported with your hands.",
             "You can interlace your fingers on the floor behind your back for a deeper stretch."
           ],
-          howManyTimes: "Hold for 1-5 minutes, once per session.",
+          frequency: [
+            { level: 'Beginner', duration: '30-60 seconds', sets: '1', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '1-3 minutes', sets: '1', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '3-5 minutes', sets: '1', reps: '1', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Digestion: Massages abdominal organs, improving digestion and boosting metabolism.",
             "Spinal Health: Gives a deep stretch to the spine and shoulders.",
@@ -87,7 +97,11 @@ export class AppComponent {
             "Adjust your position so your sitting bones are as close to the wall as comfortable.",
             "Relax your arms out to the sides, palms up. Breathe deeply."
           ],
-          howManyTimes: "Hold for 5-15 minutes daily.",
+          frequency: [
+            { level: 'Beginner', duration: '5 minutes', sets: '1', reps: '1', frequency: 'Once daily, ideal before bed' },
+            { level: 'Intermediate', duration: '10 minutes', sets: '1', reps: '1', frequency: 'Once daily, ideal before bed' },
+            { level: 'Advanced', duration: '15 minutes', sets: '1', reps: '1', frequency: 'Once daily, ideal before bed' }
+          ],
           why: [
             "Restoration: Calms the nervous system, reduces fatigue and restores energy.",
             "Circulation: Alleviates swollen ankles and feet by reversing blood flow.",
@@ -113,7 +127,11 @@ export class AppComponent {
             "Inhale and lift your head, chest, and abdomen, keeping your navel on the floor.",
             "Keep your shoulders relaxed and away from your ears. Look slightly upward."
           ],
-          howManyTimes: "Hold for 15-30 seconds, repeat 2-3 times.",
+          frequency: [
+            { level: 'Beginner', duration: '15 seconds', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '20-25 seconds', sets: '2-3', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '30 seconds', sets: '3', reps: '1 per set', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Spinal Strength: Strengthens the spine and increases its flexibility.",
             "Energy Boost: Opens the chest and lungs, invigorating the body and reducing fatigue.",
@@ -132,7 +150,11 @@ export class AppComponent {
             "Engage your leg muscles and keep thighs lifted. Look forward or slightly up.",
             "The tops of your feet and your hands are the only points of contact with the floor."
           ],
-          howManyTimes: "Hold for 15-30 seconds, often part of a flow like Sun Salutation.",
+          frequency: [
+            { level: 'Beginner', duration: '15 seconds', sets: '3-5', reps: '1 per set', frequency: 'As part of a flow' },
+            { level: 'Intermediate', duration: '20-25 seconds', sets: '3-5', reps: '1 per set', frequency: 'As part of a flow' },
+            { level: 'Advanced', duration: '30 seconds', sets: '3-5', reps: '1 per set', frequency: 'As part of a flow' }
+          ],
           why: [
             "Posture: Improves posture by strengthening back muscles and opening the chest.",
             "Stimulation: Stimulates abdominal organs and improves digestion.",
@@ -151,7 +173,11 @@ export class AppComponent {
             "Look forward, keeping your neck long. Your body should resemble a bow.",
             "Breathe steadily while holding the pose."
           ],
-          howManyTimes: "Hold for 20-30 seconds, once or twice.",
+          frequency: [
+            { level: 'Beginner', duration: '15-20 seconds', sets: '1-2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '25 seconds', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '30 seconds', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Metabolism: Massages the entire digestive tract, boosting metabolism and aiding weight loss.",
             "Flexibility: Stretches the entire front of the body, including the chest, abdomen, and thighs.",
@@ -170,7 +196,11 @@ export class AppComponent {
             "Inhale and press into your hands and feet, lifting your hips and then your torso off the floor.",
             "Allow your head to hang gently. Straighten arms and legs as much as possible."
           ],
-          howManyTimes: "Advanced pose. Hold for 5-10 breaths. Repeat 1-3 times.",
+          frequency: [
+            { level: 'Beginner', duration: '3-5 breaths (Bridge Pose)', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '5-8 breaths', sets: '2-3', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '10+ breaths', sets: '3', reps: '1 per set', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Full Body Energy: Opens up the entire body, providing a massive energy boost.",
             "Strength: Builds strength in the legs, arms, spine, and abdomen.",
@@ -196,7 +226,11 @@ export class AppComponent {
             "Inhale and lengthen your spine. Exhale and twist towards the right.",
             "Place your right hand on the floor behind you and bring your left elbow to the outside of your right knee."
           ],
-          howManyTimes: "Hold for 30-60 seconds on each side.",
+          frequency: [
+            { level: 'Beginner', duration: '30 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily, ideally after practice' },
+            { level: 'Intermediate', duration: '45 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily, ideally after practice' },
+            { level: 'Advanced', duration: '60 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily, ideally after practice' }
+          ],
           why: [
             "Detoxification: Massages abdominal organs like the liver and kidneys, aiding in detox.",
             "Digestion: Improves digestive function and relieves constipation.",
@@ -215,7 +249,11 @@ export class AppComponent {
             "Inhale to lengthen your spine. Exhale and twist your torso to the right.",
             "Place your right hand on the floor behind you and your left hand on your right thigh."
           ],
-          howManyTimes: "Hold for 30-60 seconds on each side.",
+          frequency: [
+            { level: 'Beginner', duration: '30 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '45 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '60 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Organ Health: Stimulates the digestive organs and improves metabolism.",
             "Pain Relief: Can relieve lower backache, neck pain, and sciatica.",
@@ -234,7 +272,11 @@ export class AppComponent {
             "Place your right fingertips on the floor behind you.",
             "For a deeper bind, clasp your hands behind your back."
           ],
-          howManyTimes: "Hold for 30-60 seconds on each side.",
+          frequency: [
+            { level: 'Beginner', duration: '30 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '45 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '60 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Detox & Digestion: Massages abdominal organs, including the liver and spleen, to improve function.",
             "Energy: Energizes the spine and nervous system.",
@@ -260,7 +302,11 @@ export class AppComponent {
             "Bend your right knee over your right ankle, keeping your back leg straight.",
             "Raise your arms overhead, palms facing each other or together. Gaze forward."
           ],
-          howManyTimes: "Hold for 30-60 seconds on each side.",
+          frequency: [
+            { level: 'Beginner', duration: '30 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '45 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '60 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Strength: Builds strength in your legs, core, and shoulders.",
             "Stamina: Increases endurance and stamina.",
@@ -279,7 +325,11 @@ export class AppComponent {
             "Turn your head to look out over your front fingertips.",
             "Keep your torso centered over your hips."
           ],
-          howManyTimes: "Hold for 30-60 seconds on each side.",
+          frequency: [
+            { level: 'Beginner', duration: '30 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '45 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '60 secs per side', sets: '1 per side', reps: '1', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Hip Opener: Stretches the hips, groin, and shoulders.",
             "Balance: Improves balance and stability.",
@@ -298,7 +348,11 @@ export class AppComponent {
             "Exhale and bend your knees, as if sitting back into an imaginary chair.",
             "Keep your thighs as parallel to the floor as possible. Keep your core engaged."
           ],
-          howManyTimes: "Hold for 30-60 seconds.",
+          frequency: [
+            { level: 'Beginner', duration: '30 seconds', sets: '1-2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '45 seconds', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '60 seconds', sets: '2-3', reps: '1 per set', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Heat Building: Creates internal heat, boosting metabolism and calorie burn.",
             "Strength: Strengthens the ankles, thighs, calves, and spine.",
@@ -317,7 +371,11 @@ export class AppComponent {
             "Coordinate each movement with an inhale or an exhale.",
             "The sequence warms up the entire body."
           ],
-          howManyTimes: "Practice 5-10 rounds in the morning.",
+          frequency: [
+            { level: 'Beginner', sets: '1', reps: '3-5 rounds', frequency: 'Once daily, ideal in the morning' },
+            { level: 'Intermediate', sets: '1', reps: '6-8 rounds', frequency: 'Once daily, ideal in the morning' },
+            { level: 'Advanced', sets: '1', reps: '10-12+ rounds', frequency: 'Once or twice daily, morning & evening' }
+          ],
           why: [
             "Metabolism: The best all-around practice for boosting metabolism and warming up the body.",
             "Cardiovascular Health: Provides a good cardiovascular workout.",
@@ -343,7 +401,11 @@ export class AppComponent {
             "For Full Boat, straighten your legs to a 45-degree angle.",
             "Extend your arms forward, parallel to the floor. Keep your chest lifted."
           ],
-          howManyTimes: "Hold for 20-60 seconds, repeat 2-3 times.",
+          frequency: [
+            { level: 'Beginner', duration: '15-20 secs (knees bent)', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '30-45 seconds', sets: '2-3', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '60 seconds (Full Boat)', sets: '3', reps: '1 per set', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Digestive Fire: Tones and strengthens the abdominal muscles, stimulating 'Agni' (digestive fire).",
             "Core Strength: Builds deep core strength, which supports a healthy back.",
@@ -362,7 +424,11 @@ export class AppComponent {
             "Your hands should be directly under your shoulders.",
             "Engage your core and glutes. Don't let your hips sag or rise."
           ],
-          howManyTimes: "Hold for 30-60 seconds, or longer as you build strength.",
+          frequency: [
+            { level: 'Beginner', duration: '20-30 seconds', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '45-60 seconds', sets: '2-3', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '90+ seconds', sets: '3', reps: '1 per set', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Full Body Toning: Tones the entire core, as well as the arms, wrists, and spine.",
             "Metabolism: Builds muscle, which helps to increase resting metabolic rate.",
@@ -381,7 +447,11 @@ export class AppComponent {
             "Keep your torso lifted to form a 'V' shape with your legs.",
             "Extend arms forward. Keep breathing deeply."
           ],
-          howManyTimes: "Hold for 20-30 seconds, repeat 2-3 times.",
+          frequency: [
+            { level: 'Beginner', duration: '15-20 seconds', sets: '2', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Intermediate', duration: '25-30 seconds', sets: '2-3', reps: '1 per set', frequency: 'Once daily during practice' },
+            { level: 'Advanced', duration: '30-45 seconds', sets: '3', reps: '1 per set', frequency: 'Once daily during practice' }
+          ],
           why: [
             "Intense Core Work: Deeply strengthens the abdominal muscles and hip flexors.",
             "Digestion: Stimulates the intestines and improves digestion.",
@@ -407,7 +477,11 @@ export class AppComponent {
             "The inhale is a natural recoil. Focus on the sharp, quick exhale.",
             "Start with one round of 20-30 breaths."
           ],
-          howManyTimes: "Start with 1 round of 30 breaths, gradually increasing to 3 rounds.",
+          frequency: [
+            { level: 'Beginner', sets: '1 round', reps: '30 breaths', frequency: 'Once daily, on an empty stomach' },
+            { level: 'Intermediate', sets: '2 rounds', reps: '50-60 breaths', frequency: 'Once daily, on an empty stomach' },
+            { level: 'Advanced', sets: '3 rounds', reps: '60-100 breaths', frequency: 'Once daily, on an empty stomach' }
+          ],
           why: [
             "Metabolism Boost: The rapid breathing increases the metabolic rate and generates internal heat.",
             "Detoxification: Cleanses the lungs and nasal passages.",
@@ -426,7 +500,11 @@ export class AppComponent {
             "The movement should come from your diaphragm, like pumping a bellow.",
             "Keep your head, neck, and shoulders still."
           ],
-          howManyTimes: "Start with 1 round of 10 breaths, build up to 3 rounds.",
+          frequency: [
+            { level: 'Beginner', sets: '1 round', reps: '10 breaths', frequency: 'Once daily, on an empty stomach' },
+            { level: 'Intermediate', sets: '2 rounds', reps: '15 breaths', frequency: 'Once daily, on an empty stomach' },
+            { level: 'Advanced', sets: '3 rounds', reps: '20 breaths', frequency: 'Once daily, on an empty stomach' }
+          ],
           why: [
             "Instant Energy: Massively increases prana (life force energy), providing an instant energy lift.",
             "Clarity: Clears the mind and sharpens focus.",
@@ -445,7 +523,11 @@ export class AppComponent {
             "The sound should be audible to you but not loud.",
             "Keep the breath long, smooth, and even."
           ],
-          howManyTimes: "Can be practiced throughout your yoga session or for 5-10 minutes on its own.",
+          frequency: [
+            { level: 'Beginner', duration: '2-3 mins seated', frequency: 'Use throughout yoga or anytime' },
+            { level: 'Intermediate', duration: '5 mins seated', frequency: 'Use throughout yoga or anytime' },
+            { level: 'Advanced', duration: '10+ mins for meditation', frequency: 'Use throughout yoga or anytime' }
+          ],
           why: [
             "Internal Heat: The friction of the breath warms the body from the inside out, activating the thyroid.",
             "Calm Focus: Calms the nervous system and helps to focus the mind.",
@@ -456,6 +538,20 @@ export class AppComponent {
     },
   ]);
 
+  readonly allPoses = computed(() => this.poseCategories().flatMap(c => c.poses));
+  
+  selectedPoseIndex = signal<number | null>(null);
+
+  readonly selectedPose = computed(() => {
+    const index = this.selectedPoseIndex();
+    const poses = this.allPoses();
+    if (index === null || index < 0 || index >= poses.length) {
+      return null;
+    }
+    return poses[index];
+  });
+
+
   readonly topPoses = signal<Pose[]>(this.poseCategories().flatMap(c => c.poses).filter(p => [
       'Sarvangasana', 'Surya Namaskar', 'Navasana', 'Kapalbhati', 'Dhanurasana'
     ].includes(p.sanskritName)));
@@ -465,10 +561,31 @@ export class AppComponent {
   }
 
   openModal(pose: Pose) {
-    this.selectedPose.set(pose);
+    const index = this.allPoses().findIndex(p => p.sanskritName === pose.sanskritName);
+    if (index !== -1) {
+      this.selectedPoseIndex.set(index);
+    }
   }
 
   closeModal() {
-    this.selectedPose.set(null);
+    this.selectedPoseIndex.set(null);
+  }
+
+  goToNextPose() {
+    const currentIndex = this.selectedPoseIndex();
+    if (currentIndex !== null) {
+      const totalPoses = this.allPoses().length;
+      const nextIndex = (currentIndex + 1) % totalPoses;
+      this.selectedPoseIndex.set(nextIndex);
+    }
+  }
+
+  goToPreviousPose() {
+    const currentIndex = this.selectedPoseIndex();
+    if (currentIndex !== null) {
+      const totalPoses = this.allPoses().length;
+      const prevIndex = (currentIndex - 1 + totalPoses) % totalPoses;
+      this.selectedPoseIndex.set(prevIndex);
+    }
   }
 }

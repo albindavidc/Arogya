@@ -107,5 +107,10 @@
 </div>
 
 @if (selectedPose(); as pose) {
-  <app-pose-detail-modal [pose]="pose" (close)="closeModal()"></app-pose-detail-modal>
+  <app-pose-detail-modal 
+    [pose]="pose" 
+    (close)="closeModal()"
+    (previous)="goToPreviousPose()"
+    (next)="goToNextPose()">
+  </app-pose-detail-modal>
 }
