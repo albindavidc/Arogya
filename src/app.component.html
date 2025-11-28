@@ -41,7 +41,7 @@
         <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           @for (pose of category.poses; track pose.sanskritName; let poseIndex = $index) {
             <div (click)="openModal(pose)" 
-                 class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 cursor-pointer">
+                 class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 cursor-pointer h-[300px]">
               <div class="holo-border-container">
                   <div class="bg-[#12121A] rounded-xl h-full shadow-lg shadow-black/30 flex flex-col">
                     <figure class="aspect-[4/3] overflow-hidden rounded-t-xl">
@@ -52,7 +52,7 @@
                         <h3 class="text-lg font-bold text-[#F4F4F8]">{{ pose.sanskritName }}</h3>
                         <p class="text-sm text-[#B8B8C4]">{{ pose.englishName }} ({{ pose.pronunciation }})</p>
                       </div>
-                      <div class="mt-auto pt-10">
+                      <div class="mt-auto pt-4">
                         <span class="inline-block bg-gradient-to-r from-[#A0E8C8]/10 to-[#A0C8E8]/10 text-[#A0E8C8] text-xs font-medium px-3 py-1 rounded-full">
                           {{ pose.benefit }}
                         </span>
