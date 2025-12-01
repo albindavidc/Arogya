@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, output, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, signal, computed, input } from '@angular/core';
 import { PoseDetailModalComponent } from './pose-detail-modal.component';
 import { Pose } from './models/pose.model';
 
 interface WarmUpExercise {
   name: string;
+  category: string;
   description: string;
-  imageUrl: string;
+  imageUrl: string; // Fallback
+  imageUrlFemale?: string;
+  imageUrlMale?: string;
   steps: string[];
 }
 
@@ -31,30 +34,55 @@ interface WarmUpExercise {
       </header>
 
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
-          @for(exercise of warmUpExercises; track exercise.name) {
-            <div (click)="openModal(exercise)" 
-                 class="group relative transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
-              <div class="holo-border-container h-full">
-                <div class="bg-black/40 backdrop-blur-sm border border-white/5 rounded-xl h-full shadow-lg shadow-black/30 flex flex-col">
-                  <figure class="aspect-[4/3] overflow-hidden rounded-t-xl">
-                    <img [src]="exercise.imageUrl" [alt]="exercise.name" width="400" height="300" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                  </figure>
-                  <div class="p-5 flex flex-col flex-grow">
+        <!-- Warm-up overview section -->
+        <section class="mb-16 bg-black/30 border border-white/5 rounded-xl p-8">
+            <h2 class="text-center text-3xl font-bold text-[#F4F4F8] mb-8">Full Warm-Up Library</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10 text-sm">
+                @for(category of exerciseCategories(); track category.name) {
                     <div>
-                      <h3 class="text-lg font-bold text-[#F4F4F8]">{{ exercise.name }}</h3>
+                        <h3 class="font-bold text-[#A0E8C8] mb-3 text-base border-b border-[#A0E8C8]/20 pb-2">{{ category.name }}</h3>
+                        <ul class="space-y-2">
+                            @for(exercise of category.exercises; track exercise.name) {
+                                <li class="text-[#B8B8C4]">{{ exercise.name }}</li>
+                            }
+                        </ul>
                     </div>
-                    <div class="mt-auto pt-4">
-                      <span class="inline-block bg-gradient-to-r from-[#A0E8C8]/5 to-[#A0C8E8]/5 border border-[#A0E8C8]/20 text-[#A0E8C8] text-xs font-medium px-3 py-1 rounded-full">
-                        {{ exercise.description }}
-                      </span>
+                }
+            </div>
+        </section>
+
+        <!-- Warm-up cards -->
+        @for(category of exerciseCategories(); track category.name) {
+          <section [id]="category.name" class="mb-16">
+            <div class="mb-8">
+              <h2 class="text-2xl font-bold text-[#F4F4F8]">{{ category.name }}</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              @for(exercise of category.exercises; track exercise.name) {
+                <div (click)="openModal(exercise)" 
+                     class="group relative transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
+                  <div class="holo-border-container h-full">
+                    <div class="bg-black/40 backdrop-blur-sm border border-white/5 rounded-xl h-full shadow-lg shadow-black/30 flex flex-col">
+                      <figure class="aspect-[4/3] overflow-hidden rounded-t-xl">
+                        <img [src]="gender() === 'male' && exercise.imageUrlMale ? exercise.imageUrlMale : (exercise.imageUrlFemale || exercise.imageUrl)" [alt]="exercise.name" width="400" height="300" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                      </figure>
+                      <div class="p-5 flex flex-col flex-grow">
+                        <div>
+                          <h3 class="text-lg font-bold text-[#F4F4F8]">{{ exercise.name }}</h3>
+                        </div>
+                        <div class="mt-auto pt-4">
+                          <span class="inline-block bg-gradient-to-r from-[#A0E8C8]/5 to-[#A0C8E8]/5 border border-[#A0E8C8]/20 text-[#A0E8C8] text-xs font-medium px-3 py-1 rounded-full">
+                            {{ exercise.category }}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              }
             </div>
-          }
-        </div>
+          </section>
+        }
       </main>
 
        <footer class="bg-black/20 border-t border-white/5 text-[#6E6E7A] mt-16">
@@ -67,7 +95,7 @@ interface WarmUpExercise {
     @if (selectedExercise(); as exercise) {
       <app-pose-detail-modal 
         [pose]="exercise" 
-        [gender]="'female'"
+        [gender]="gender()"
         (close)="closeModal()"
         (previous)="goToPreviousExercise()"
         (next)="goToNextExercise()">
@@ -79,8 +107,20 @@ interface WarmUpExercise {
 })
 export class WarmUpComponent {
   back = output<void>();
+  gender = input.required<'female' | 'male'>();
 
   selectedExerciseIndex = signal<number | null>(null);
+
+  readonly exerciseCategories = computed(() => {
+    const categories = new Map<string, WarmUpExercise[]>();
+    for (const exercise of this.warmUpExercises) {
+      if (!categories.has(exercise.category)) {
+        categories.set(exercise.category, []);
+      }
+      categories.get(exercise.category)!.push(exercise);
+    }
+    return Array.from(categories.entries()).map(([name, exercises]) => ({ name, exercises }));
+  });
 
   readonly selectedExercise = computed(() => {
     const index = this.selectedExerciseIndex();
@@ -88,13 +128,18 @@ export class WarmUpComponent {
       return null;
     }
     const exercise = this.warmUpExercises[index];
+    const currentGender = this.gender();
+    const imageUrl = currentGender === 'male' && exercise.imageUrlMale 
+      ? exercise.imageUrlMale 
+      : (exercise.imageUrlFemale || exercise.imageUrl);
+      
     // Adapt WarmUpExercise to the Pose interface for the modal
     return {
       sanskritName: exercise.name,
       englishName: 'Warm-Up Exercise',
       pronunciation: '',
       benefit: exercise.description,
-      imageUrl: exercise.imageUrl,
+      imageUrl: imageUrl,
       howToDo: exercise.steps,
       frequency: [],
       why: [],
@@ -131,32 +176,224 @@ export class WarmUpComponent {
   }
 
   readonly warmUpExercises: WarmUpExercise[] = [
+    // EYES
+    {
+      name: 'Eye Warm-Up Series',
+      category: 'EYES',
+      description: 'A comprehensive series of movements to strengthen eye muscles, relieve strain from screen time, and improve focus, peripheral awareness, and overall ocular coordination.',
+      imageUrl: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/women/warm-up/f-eye.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/women/warm-up/f-eye.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/men/warm-up/m-eye.png?raw=true',
+      steps: [
+        'ROTATIONS: Slowly trace a large circle with your eyes clockwise (3-5 times), then counterclockwise (3-5 times).',
+        'HORIZONTAL & VERTICAL: Look side-to-side (5-10 times), then look up and down (5-10 times).',
+        'DIAGONAL: Move your eyes from top-right to bottom-left (5 times), then top-left to bottom-right (5 times).',
+        'FOCUS SHIFT: Focus on your thumb (10 inches away) for 5 seconds, then shift to a distant object (20+ feet away) for 5 seconds. Repeat for 1-2 minutes.',
+        'PALMING (REST): Rub palms to create warmth, then gently cup them over closed eyes for 30-60 seconds to relax.'
+      ]
+    },
+    // FACE & JAW
+    {
+      name: 'Lion\'s Breath (Simhasana)',
+      category: 'FACE & JAW',
+      description: 'Releasing tension in the jaw, face, and throat while activating facial muscles.',
+      imageUrl: 'https://cdn.yogajournal.com/wp-content/uploads/2021/11/Lion-Pose_Andrew-Clark_2400x1350-1.jpg',
+      steps: [
+        'Kneel or sit comfortably.',
+        'Inhale deeply through your nose.',
+        'Exhale forcefully through your mouth, making a "ha" sound.',
+        'Simultaneously, open your mouth wide, stick your tongue out towards your chin, and gaze upwards.',
+        'Repeat 3-5 times.'
+      ]
+    },
+    {
+      name: 'Jaw Circles',
+      category: 'FACE & JAW',
+      description: 'Releasing the masseter and temporalis muscles, relieving TMJ tension.',
+      imageUrl: 'https://i.ytimg.com/vi/EM18yA08G98/maxresdefault.jpg',
+      steps: [
+        'Sit comfortably with your mouth gently closed.',
+        'Slowly move your lower jaw in a circular motion.',
+        'Complete 5 circles clockwise, then 5 circles counterclockwise.',
+        'Keep the movement gentle and relaxed.'
+      ]
+    },
+    {
+      name: 'Facial Massage',
+      category: 'FACE & JAW',
+      description: 'Self-massage of the forehead, temples, cheeks, and jawline to release fascial tension.',
+      imageUrl: 'https://media.self.com/photos/61dee0705a7698334b5c3bf7/master/w_1600%2Cc_limit/face-yoga-forehead.gif',
+      steps: [
+        'Using your fingertips, gently massage your forehead in circular motions.',
+        'Move to your temples and continue the gentle massage.',
+        'Massage your cheeks, jawline, and the area around your mouth.',
+        'Breathe deeply and relax your facial muscles.'
+      ]
+    },
+    // HEAD & NECK
     {
       name: 'Neck Rolls',
-      description: 'Gently releases tension in the neck and upper shoulders, improving flexibility.',
+      category: 'HEAD & NECK',
+      description: 'Gently releases tension in the neck and upper shoulders, improving cervical flexibility.',
       imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/03/neck-rolls-exercise-illustration.jpg',
       steps: [
         'Sit or stand tall, relaxing your shoulders.',
         'Gently drop your chin to your chest.',
         'Slowly roll your right ear toward your right shoulder.',
-        'Continue the circle by dropping your head back, then rolling the left ear to the left shoulder.',
-        'Repeat 3-5 times in each direction.'
+        'Continue the half-circle by dropping your chin back to center and over to the left.',
+        'Repeat 3-5 times. Avoid full circles if you have neck sensitivity.'
       ]
     },
     {
+      name: 'Neck Side Stretches',
+      category: 'HEAD & NECK',
+      description: 'Lateral flexion of the cervical spine, lengthening the scalenes and upper trapezius.',
+      imageUrl: 'https://i.ytimg.com/vi/2nO0-9a-u2o/maxresdefault.jpg',
+      steps: [
+        'Sit tall. Gently tilt your right ear towards your right shoulder.',
+        'You can place your right hand on your head to gently deepen the stretch.',
+        'Keep your left shoulder relaxed and down.',
+        'Hold for 15-30 seconds, then repeat on the other side.'
+      ]
+    },
+    {
+      name: 'Chin Tucks',
+      category: 'HEAD & NECK',
+      description: 'Engages deep cervical flexors, correcting forward head posture.',
+      imageUrl: 'https://www.verywellhealth.com/thmb/pSSXyIe20ATE4j37p_8c07e0b-8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Verywell-01-2696368-ChinTuck-5994a42b03f4020010de04f3.gif',
+      steps: [
+        'Sit or stand tall, looking straight ahead.',
+        'Gently draw your head straight back, as if making a double chin.',
+        'Keep your chin level, not tilting it up or down.',
+        'Hold for 5 seconds, then relax. Repeat 5-10 times.'
+      ]
+    },
+    {
+      name: 'Neck Flexion and Extension',
+      category: 'HEAD & NECK',
+      description: 'Forward and backward movements warming the anterior and posterior cervical muscles.',
+      imageUrl: 'https://www.health.harvard.edu/media/content/images/neck-stretch-flexion-extension-M.jpg',
+      steps: [
+        'Sit tall with a straight spine.',
+        'Gently drop your chin towards your chest (flexion). Hold for a breath.',
+        'Slowly lift your head and tilt it back to look at the ceiling (extension). Hold for a breath.',
+        'Repeat the movement slowly 5 times.'
+      ]
+    },
+    // SHOULDERS & UPPER BACK
+    {
       name: 'Shoulder Rolls',
-      description: 'Warms up the shoulder joints and releases tightness in the upper back and neck.',
+      category: 'SHOULDERS & UPPER BACK',
+      description: 'Warms up the shoulder joints and releases tightness in the upper back.',
       imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/02/shoulder-rolls-exercise-illustration.jpg',
       steps: [
         'Sit or stand with arms relaxed by your sides.',
         'Inhale and lift your shoulders up toward your ears.',
         'Exhale and roll them back and down, squeezing your shoulder blades together.',
-        'Repeat 5 times, then reverse the direction, rolling them forward.'
+        'Repeat 5-8 times, then reverse the direction, rolling them forward.'
       ]
     },
     {
-      name: 'Cat-Cow Pose (Marjaryasana/Bitilasana)',
-      description: 'A dynamic movement that warms up the spine and improves flexibility and blood flow.',
+      name: 'Arm Circles',
+      category: 'SHOULDERS & UPPER BACK',
+      description: 'Progressive circular movements that lubricate the glenohumeral joint.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/arm-circles-exercise-illustration.jpg',
+      steps: [
+        'Stand with your feet shoulder-width apart, arms extended to your sides at shoulder height.',
+        'Make small circles with your arms, gradually making them larger.',
+        'Perform 10-15 circles forward, then reverse the direction for 10-15 circles backward.'
+      ]
+    },
+    {
+      name: 'Eagle Arms (Garudasana Arms)',
+      category: 'SHOULDERS & UPPER BACK',
+      description: 'Deep stretch for the rhomboids, posterior deltoids, and space between the shoulder blades.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Eagle-Pose-Garudasana_Andrew-Clark_2400x1350-2-e1634591444583.jpeg',
+      steps: [
+        'Extend your arms forward, parallel to the floor.',
+        'Cross your right arm over your left.',
+        'Bend your elbows, wrapping your right hand to press against your left palm.',
+        'Lift your elbows while keeping your shoulders down. Hold for 20-30 seconds and switch sides.'
+      ]
+    },
+    {
+      name: 'Cow Face Arms (Gomukhasana Arms)',
+      category: 'SHOULDERS & UPPER BACK',
+      description: 'Opens the shoulders through internal and external rotation, stretching the triceps.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Cow-Face-Pose_Andrew-Clark_2400x1350-1-e1633534063603.jpeg',
+      steps: [
+        'Reach your right arm up, then bend the elbow to drop your hand down your back.',
+        'Reach your left arm down and behind your back, bending the elbow to reach up.',
+        'Try to clasp your fingers. If you can\'t reach, use a strap or towel.',
+        'Hold for 20-30 seconds, then switch arms.'
+      ]
+    },
+    {
+      name: 'Thread the Needle',
+      category: 'SHOULDERS & UPPER BACK',
+      description: 'Rotational stretch targeting the thoracic spine and posterior shoulder.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2022/07/Thread-the-Needle-Pose_Marisa-Crans_2400x1350-1.jpeg',
+      steps: [
+        'Start on all fours.',
+        'Inhale and reach your right arm to the sky.',
+        'Exhale and "thread" your right arm under your left, resting your right shoulder and cheek on the floor.',
+        'Hold for 20-30 seconds, then repeat on the other side.'
+      ]
+    },
+    // ARMS, WRISTS & HANDS
+    {
+      name: 'Wrist Circles',
+      category: 'ARMS, WRISTS & HANDS',
+      description: 'Rotational movements lubricating the radiocarpal joint.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/02/wrist-circles-exercise-illustration.jpg',
+      steps: [
+        'Extend your arms forward or to the sides.',
+        'Make a fist or keep hands open.',
+        'Slowly rotate your wrists in a circular motion.',
+        'Perform 10 rotations clockwise, then 10 counterclockwise.'
+      ]
+    },
+    {
+      name: 'Wrist Flexion and Extension',
+      category: 'ARMS, WRISTS & HANDS',
+      description: 'Forward and backward bending of the wrists, preparing them for weight-bearing postures.',
+      imageUrl: 'https://www.acefitness.org/globalassets/sec-pt-images/6-wrist-flexion-and-extension.jpg',
+      steps: [
+        'Extend your right arm forward, palm facing up.',
+        'Gently bend your wrist down with your left hand, stretching the forearm. Hold for 15-20 seconds.',
+        'Now point your fingers up and gently pull them back. Hold for 15-20 seconds.',
+        'Repeat on the other arm.'
+      ]
+    },
+    {
+      name: 'Finger Spreads and Fists',
+      category: 'ARMS, WRISTS & HANDS',
+      description: 'Alternating extension and flexion of the fingers, activating intrinsic hand muscles.',
+      imageUrl: 'https://i.ytimg.com/vi/wzLi22g2A-M/maxresdefault.jpg',
+      steps: [
+        'Extend your arms forward.',
+        'Spread your fingers as wide as possible and hold for 5 seconds.',
+        'Make a tight fist and hold for 5 seconds.',
+        'Repeat this sequence 5-10 times.'
+      ]
+    },
+    {
+      name: 'Prayer Stretch',
+      category: 'ARMS, WRISTS & HANDS',
+      description: 'Deep wrist and forearm stretch opening the carpal tunnel.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2022/06/Prayer-Hands-at-Heart-Center-1.jpeg',
+      steps: [
+        'Bring your palms together in front of your chest in a prayer position.',
+        'Slowly lower your hands towards your waistline, keeping palms together.',
+        'Feel the stretch in your wrists and forearms. Hold for 20-30 seconds.',
+        'For Reverse Prayer, try to bring palms together behind your back.'
+      ]
+    },
+    // SPINE & TORSO
+    {
+      name: 'Cat-Cow Pose',
+      category: 'SPINE & TORSO',
+      description: 'Dynamic spinal flexion and extension that warms the entire vertebral column.',
       imageUrl: 'https://cdn.yogajournal.com/wp-content/uploads/2021/11/Cat-Pose_Andrew-Clark_2400x1350-1-e1637604033202.jpg',
       steps: [
         'Start on your hands and knees in a tabletop position.',
@@ -167,7 +404,8 @@ export class WarmUpComponent {
     },
     {
       name: 'Seated Torso Twists',
-      description: 'Warms up the spine and abdominal muscles, preparing them for deeper twists.',
+      category: 'SPINE & TORSO',
+      description: 'Warms up the thoracic spine, obliques, and intercostal muscles.',
       imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/seated-torso-twist-exercise-illustration.jpg',
       steps: [
         'Sit comfortably on the floor with your legs crossed.',
@@ -177,14 +415,307 @@ export class WarmUpComponent {
       ]
     },
     {
-      name: 'Downward-Facing Dog (Adho Mukha Svanasana)',
-      description: 'A full-body stretch that energizes and warms the arms, shoulders, back, and legs.',
+      name: 'Standing Side Bends',
+      category: 'SPINE & TORSO',
+      description: 'Lateral spinal flexion that lengthens the quadratus lumborum, obliques, and intercostals.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/side-bend-stretch-exercise-illustration.jpg',
+      steps: [
+        'Stand tall with your feet hip-width apart.',
+        'Raise your right arm overhead.',
+        'Gently bend your torso to the left, feeling a stretch along your right side.',
+        'Hold for 15-20 seconds, then switch sides.'
+      ]
+    },
+    {
+      name: 'Spinal Waves',
+      category: 'SPINE & TORSO',
+      description: 'Fluid undulating movements through the entire spine, awakening segmental vertebral articulation.',
+      imageUrl: 'https://i.ytimg.com/vi/qDwYx-S2D6A/maxresdefault.jpg',
+      steps: [
+        'Start in a tabletop position.',
+        'Initiate a wave from your tailbone, moving sequentially through your spine to your head, like a Cat-Cow flow.',
+        'Make the movement fluid and continuous.',
+        'Explore forward and backward waves for 30-60 seconds.'
+      ]
+    },
+    {
+      name: 'Pelvic Tilts',
+      category: 'SPINE & TORSO',
+      description: 'Gentle tilting that warms the lumbar spine and activates the deep core.',
+      imageUrl: 'https://www.verywellhealth.com/thmb/x-OR1FBC9Yg6A_QDp9GjPz9-L1s=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Verywell-01-2696365-PelvicTilt-5994a2f803f4020010ddff17.gif',
+      steps: [
+        'Lie on your back with your knees bent and feet flat on the floor.',
+        'Gently flatten your lower back against the floor by engaging your core (posterior tilt).',
+        'Relax and allow a small arch to form in your lower back (anterior tilt).',
+        'Repeat this gentle rocking motion 10-15 times.'
+      ]
+    },
+    // CORE & ABDOMEN
+    {
+      name: 'Supine Knee-to-Chest',
+      category: 'CORE & ABDOMEN',
+      description: 'Gentle compression that massages the abdominal organs and releases the lower back.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/11/Knees-to-Chest-Pose_Andrew-Clark_2400x1350-1-e1637599052695.jpeg',
+      steps: [
+        'Lie on your back.',
+        'Exhale and draw both knees to your chest.',
+        'Clasp your hands around your shins or thighs.',
+        'Gently rock side-to-side to massage your lower back. Hold for 30-60 seconds.'
+      ]
+    },
+    {
+      name: 'Reclined Twists',
+      category: 'CORE & ABDOMEN',
+      description: 'Rotational stretch for the obliques, spinal erectors, and outer hips.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/12/Supine-Spinal-Twist_Andrew-Clark_2400x1350-1.jpeg',
+      steps: [
+        'Lie on your back and draw your knees to your chest.',
+        'Extend your arms out to a "T" shape.',
+        'Gently drop both knees to the right side, keeping your left shoulder on the ground.',
+        'Hold for 30 seconds, then repeat on the other side.'
+      ]
+    },
+    {
+      name: 'Bridge Lifts',
+      category: 'CORE & ABDOMEN',
+      description: 'Dynamic pelvic lifts that warm the glutes, hamstrings, and spinal extensors.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Bridge-Pose_Andrew-Clark_2400x1350-e1633534570119.jpeg',
+      steps: [
+        'Lie on your back, knees bent, feet flat and hip-width apart.',
+        'Inhale and lift your hips off the floor.',
+        'Exhale and slowly lower your hips back down.',
+        'Repeat this dynamic lift 10-15 times.'
+      ]
+    },
+    // HIPS & PELVIS
+    {
+      name: 'Hip Circles',
+      category: 'HIPS & PELVIS',
+      description: 'Standing or tabletop circular movements that lubricate the acetabulofemoral joint.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/hip-circles-exercise-illustration.jpg',
+      steps: [
+        'Stand with feet hip-width apart, hands on your hips.',
+        'Gently push your hips forward, then circle them to the right, back, and left.',
+        'Make 5-8 large, slow circles in one direction, then switch.'
+      ]
+    },
+    {
+      name: 'Butterfly Pose (Baddha Konasana)',
+      category: 'HIPS & PELVIS',
+      description: 'Opens the inner thighs and groin, warming the hip adductors.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/09/Bound-Angle-Pose_Andrew-Clark_2400x1350-2-e1632338601839.jpeg',
+      steps: [
+        'Sit on the floor with the soles of your feet together and your knees out to the sides.',
+        'Hold onto your feet or ankles.',
+        'Sit tall, and gently flap your knees like a butterfly\'s wings for 20-30 seconds.',
+        'For a deeper stretch, hinge forward at the hips.'
+      ]
+    },
+    {
+      name: 'Figure Four Stretch',
+      category: 'HIPS & PELVIS',
+      description: 'Targets the piriformis and deep external hip rotators, releasing tension.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/11/Eye-of-the-Needle-Pose_Andrew-Clark_2400x1350-1.jpeg',
+      steps: [
+        'Lie on your back with knees bent.',
+        'Cross your right ankle over your left knee.',
+        'Reach through and clasp your hands behind your left thigh.',
+        'Gently pull the left leg towards you. Hold for 30 seconds and switch sides.'
+      ]
+    },
+    {
+      name: 'Low Lunge (Anjaneyasana)',
+      category: 'HIPS & PELVIS',
+      description: 'Deep hip flexor stretch warming the psoas, iliacus, and rectus femoris.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Low-Lunge_Andrew-Clark_2400x1350-2-e1634063715694.jpeg',
+      steps: [
+        'From a tabletop position, step your right foot forward between your hands.',
+        'Slide your left knee back until you feel a comfortable stretch in your hip flexor.',
+        'Keep your front knee stacked over your ankle.',
+        'Hold for 30 seconds, then switch sides.'
+      ]
+    },
+    {
+      name: 'Lizard Pose (Utthan Pristhasana)',
+      category: 'HIPS & PELVIS',
+      description: 'Intensified hip opener targeting the hip flexors, adductors, and groin region.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2022/01/Lizard-Pose_Andrew-Clark_2400x1350-2.jpeg',
+      steps: [
+        'From a low lunge, place both hands on the inside of your front foot.',
+        'Heel-toe your front foot out to the edge of your mat.',
+        'Stay on your hands or lower down to your forearms for a deeper stretch.',
+        'Hold for 30 seconds and switch sides.'
+      ]
+    },
+    {
+      name: '90-90 Hip Switches',
+      category: 'HIPS & PELVIS',
+      description: 'Dynamic internal and external rotation transitions that warm all planes of hip movement.',
+      imageUrl: 'https://i.ytimg.com/vi/a_23Gj8l-vY/maxresdefault.jpg',
+      steps: [
+        'Sit on the floor with your knees bent and feet wider than your hips.',
+        'Gently drop both knees to the right side, aiming for 90-degree angles.',
+        'Lift your knees back to the center and switch, dropping them to the left.',
+        'Continue this fluid "windshield wiper" motion for 30-60 seconds.'
+      ]
+    },
+    // LEGS & THIGHS
+    {
+      name: 'Downward-Facing Dog',
+      category: 'LEGS & THIGHS',
+      description: 'Full-body stretch energizing the arms, shoulders, spine, hamstrings, and calves.',
       imageUrl: 'https://cdn.yogajournal.com/wp-content/uploads/2021/11/Downward-Facing-Dog_Andrew-Clark_2400x1350-2.jpg',
       steps: [
         'From tabletop, curl your toes and lift your hips up and back.',
         'Form an inverted "V" shape with your body.',
         'Press your hands firmly into the mat and keep your head between your upper arms.',
         '"Pedal" your feet by bending one knee and then the other to stretch your hamstrings.'
+      ]
+    },
+    {
+      name: 'Standing Forward Fold',
+      category: 'LEGS & THIGHS',
+      description: 'Lengthens the entire posterior chain including hamstrings, calves, and spinal erectors.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/11/Standing-Forward-Bend_Andrew-Clark_2400x1350-1-e1637603373199.jpeg',
+      steps: [
+        'Stand with feet hip-width apart.',
+        'Exhale and hinge at your hips, keeping your back straight.',
+        'Let your head hang heavy and bend your knees as much as needed.',
+        'Hold for 30 seconds, breathing into your hamstrings.'
+      ]
+    },
+    {
+      name: 'Pyramid Pose Prep',
+      category: 'LEGS & THIGHS',
+      description: 'Targeted hamstring and calf stretch with hip-squaring alignment.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Pyramid-Pose_Andrew-Clark_2400x1350-2.jpeg',
+      steps: [
+        'Take a staggered stance, right foot forward, left foot back about 3 feet.',
+        'Square your hips to the front.',
+        'Hinge at your hips and fold over your front leg with a flat back.',
+        'Hold for 20-30 seconds and switch sides.'
+      ]
+    },
+    {
+      name: 'Leg Swings (Front-to-Back)',
+      category: 'LEGS & THIGHS',
+      description: 'Dynamic movements warming the hip flexors and hamstrings.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/front-and-back-leg-swings-exercise-illustration.jpg',
+      steps: [
+        'Stand holding onto a wall or chair for support.',
+        'Swing your right leg forward and backward in a controlled motion.',
+        'Keep your torso upright and core engaged.',
+        'Perform 10-15 swings, then switch legs.'
+      ]
+    },
+    {
+      name: 'Leg Swings (Side-to-Side)',
+      category: 'LEGS & THIGHS',
+      description: 'Lateral dynamic stretches warming the adductors and abductors.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/side-leg-swings-exercise-illustration.jpg',
+      steps: [
+        'Stand facing a wall or chair for support.',
+        'Swing your right leg from side to side in front of your body.',
+        'Keep the movement controlled, focusing on the inner and outer thigh.',
+        'Perform 10-15 swings, then switch legs.'
+      ]
+    },
+    {
+      name: 'Chair Pose (Utkatasana)',
+      category: 'LEGS & THIGHS',
+      description: 'Activates and warms the quadriceps, glutes, and core while building heat.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Chair-Pose_Andrew-Clark_2400x1350-1-e1633537299395.jpeg',
+      steps: [
+        'Stand with feet together or hip-width apart.',
+        'Inhale and raise your arms overhead.',
+        'Exhale and bend your knees, sitting back as if in an imaginary chair.',
+        'Keep your core engaged and chest lifted. Hold for 20-30 seconds.'
+      ]
+    },
+    // KNEES & LOWER LEGS
+    {
+      name: 'Knee Circles',
+      category: 'KNEES & LOWER LEGS',
+      description: 'Gentle rotational movements lubricating the knee joint.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/02/knee-circles-exercise-illustration.jpg',
+      steps: [
+        'Stand with your feet together and bend your knees slightly.',
+        'Place your hands on your knees.',
+        'Gently rotate your knees in a circular motion.',
+        'Perform 10 circles clockwise, then 10 counterclockwise.'
+      ]
+    },
+    {
+      name: 'Calf Raises',
+      category: 'KNEES & LOWER LEGS',
+      description: 'Activates the gastrocnemius and soleus, warming the Achilles tendon.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/calf-raises-exercise-illustration.jpg',
+      steps: [
+        'Stand with your feet hip-width apart.',
+        'Slowly raise your heels off the ground, coming onto the balls of your feet.',
+        'Hold for a moment at the top, then slowly lower your heels back down.',
+        'Repeat 15-20 times.'
+      ]
+    },
+    {
+      name: 'Standing Quad Stretch',
+      category: 'KNEES & LOWER LEGS',
+      description: 'Lengthens the quadriceps and hip flexors while improving balance.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/standing-quad-stretch-exercise-illustration.jpg',
+      steps: [
+        'Stand on one leg, holding onto a wall for balance if needed.',
+        'Grab your right foot with your right hand and gently pull your heel towards your glute.',
+        'Keep your knees together and stand up tall.',
+        'Hold for 20-30 seconds, then switch legs.'
+      ]
+    },
+    // ANKLES & FEET
+    {
+      name: 'Ankle Circles',
+      category: 'ANKLES & FEET',
+      description: 'Rotational movements lubricating the talocrural joint.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/ankle-circles-exercise-illustration.jpg',
+      steps: [
+        'Sit on the floor or in a chair.',
+        'Extend one leg and slowly rotate your ankle in a circle.',
+        'Make 10 circles in one direction, then 10 in the other.',
+        'Repeat with the other ankle.'
+      ]
+    },
+    {
+      name: 'Toe Stretch (Kneeling)',
+      category: 'ANKLES & FEET',
+      description: 'Extends and warms the plantar fascia, toe flexors, and intrinsic foot muscles.',
+      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/12/Toes-Pose_Andrew-Clark_2400x1350-1.jpeg',
+      steps: [
+        'Kneel on the floor with your toes tucked under.',
+        'Gently sit back on your heels.',
+        'You should feel a deep stretch in the soles of your feet.',
+        'Hold for 20-40 seconds.'
+      ]
+    },
+    {
+      name: 'Foot Flexion and Extension',
+      category: 'ANKLES & FEET',
+      description: 'Alternating dorsiflexion and plantarflexion to warm the tibialis anterior and calf muscles.',
+      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/ankle-dorsiflexion-plantar-flexion-exercise-illustration.jpg',
+      steps: [
+        'Sit with your legs extended in front of you.',
+        'Point your toes away from you (plantarflexion) and hold for 5 seconds.',
+        'Flex your feet, pulling your toes back towards you (dorsiflexion) and hold for 5 seconds.',
+        'Repeat 10-15 times.'
+      ]
+    },
+    {
+      name: 'Toe Splays and Scrunches',
+      category: 'ANKLES & FEET',
+      description: 'Activates the intrinsic foot muscles, improving foot dexterity and grounding awareness.',
+      imageUrl: 'https://i.ytimg.com/vi/b3f-D-igk2U/maxresdefault.jpg',
+      steps: [
+        'Sit or stand comfortably.',
+        'Lift your toes and spread them as wide apart as possible. Hold for 5 seconds.',
+        'Lower your toes and then scrunch them, as if trying to pick up a towel. Hold for 5 seconds.',
+        'Repeat this sequence 5-10 times.'
       ]
     }
   ];

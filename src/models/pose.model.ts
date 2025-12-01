@@ -17,6 +17,8 @@ export interface Pose {
   imageUrlsMale?: string[];
   stepsImageUrlMale?: string;
   stepsImageUrlFemale?: string;
+  handImageUrlMale?: string;
+  handImageUrlFemale?: string;
   howToDo: string[];
   howToDoMale?: string[];
   howToDoFemale?: string[];

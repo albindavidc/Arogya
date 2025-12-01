@@ -71,7 +71,7 @@ import { Pose } from './models/pose.model';
             <div class="flex justify-between items-start">
               <div>
                 <h2 class="text-2xl font-bold text-[#E8A0BF] font-lora">{{ pose().sanskritName }}</h2>
-                <p class="text-[#B8B8C4]">{{ pose().englishName }} ({{ pose().pronunciation }})</p>
+                <p class="text-[#B8B8C4]">{{ pose().englishName }}@if(pose().pronunciation) { ({{ pose().pronunciation }}) }</p>
               </div>
               <button 
                 (click)="close.emit()"
@@ -219,8 +219,19 @@ export class PoseDetailModalComponent {
   readonly rightThumbnails = computed(() => {
     const p = this.pose();
     const gender = this.gender();
+    const thumbnails: string[] = [];
+
     const stepsUrl = gender === 'male' ? p.stepsImageUrlMale : p.stepsImageUrlFemale;
-    return stepsUrl ? [stepsUrl] : [];
+    if (stepsUrl) {
+      thumbnails.push(stepsUrl);
+    }
+    
+    const handUrl = gender === 'male' ? p.handImageUrlMale : p.handImageUrlFemale;
+    if (handUrl) {
+      thumbnails.push(handUrl);
+    }
+
+    return thumbnails;
   });
 
   constructor() {

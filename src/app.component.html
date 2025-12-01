@@ -140,7 +140,7 @@
       </div>
     </footer>
   } @else {
-    <app-warm-up (back)="hideWarmUp()"></app-warm-up>
+    <app-warm-up (back)="hideWarmUp()" [gender]="selectedGender()"></app-warm-up>
   }
 </div>
 

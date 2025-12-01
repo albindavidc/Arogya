@@ -63,6 +63,8 @@ export class AppComponent {
           ],
           stepsImageUrlFemale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/women/inversion-poses/Sirsasana/f-steps.png?raw=true',
           stepsImageUrlMale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/men/inversion-poses/Sirsasana/m-steps.png?raw=true',
+          handImageUrlFemale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/women/inversion-poses/Sirsasana/f-hand.png?raw=true',
+          handImageUrlMale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/men/inversion-poses/Sirsasana/m-hand.png?raw=true',
           howToDo: [
             "Kneel on the floor and interlock your fingers to create a cup with your hands.",
             "Place your forearms and the crown of your head on the floor, cupping the back of your head with your hands.",
