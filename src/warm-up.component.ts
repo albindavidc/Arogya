@@ -232,52 +232,17 @@ export class WarmUpComponent {
     },
     // HEAD & NECK
     {
-      name: 'Neck Rolls',
+      name: 'Head & Neck Series',
       category: 'HEAD & NECK',
-      description: 'Gently releases tension in the neck and upper shoulders, improving cervical flexibility.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/03/neck-rolls-exercise-illustration.jpg',
+      description: 'A complete sequence to release tension, improve flexibility, and correct posture in the neck and upper shoulders.',
+      imageUrl: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/women/warm-up/f-head.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/women/warm-up/f-head.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/Arogya-Resources/blob/main/public/men/warm-up/m-head.png?raw=true',
       steps: [
-        'Sit or stand tall, relaxing your shoulders.',
-        'Gently drop your chin to your chest.',
-        'Slowly roll your right ear toward your right shoulder.',
-        'Continue the half-circle by dropping your chin back to center and over to the left.',
-        'Repeat 3-5 times. Avoid full circles if you have neck sensitivity.'
-      ]
-    },
-    {
-      name: 'Neck Side Stretches',
-      category: 'HEAD & NECK',
-      description: 'Lateral flexion of the cervical spine, lengthening the scalenes and upper trapezius.',
-      imageUrl: 'https://i.ytimg.com/vi/2nO0-9a-u2o/maxresdefault.jpg',
-      steps: [
-        'Sit tall. Gently tilt your right ear towards your right shoulder.',
-        'You can place your right hand on your head to gently deepen the stretch.',
-        'Keep your left shoulder relaxed and down.',
-        'Hold for 15-30 seconds, then repeat on the other side.'
-      ]
-    },
-    {
-      name: 'Chin Tucks',
-      category: 'HEAD & NECK',
-      description: 'Engages deep cervical flexors, correcting forward head posture.',
-      imageUrl: 'https://www.verywellhealth.com/thmb/pSSXyIe20ATE4j37p_8c07e0b-8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Verywell-01-2696368-ChinTuck-5994a42b03f4020010de04f3.gif',
-      steps: [
-        'Sit or stand tall, looking straight ahead.',
-        'Gently draw your head straight back, as if making a double chin.',
-        'Keep your chin level, not tilting it up or down.',
-        'Hold for 5 seconds, then relax. Repeat 5-10 times.'
-      ]
-    },
-    {
-      name: 'Neck Flexion and Extension',
-      category: 'HEAD & NECK',
-      description: 'Forward and backward movements warming the anterior and posterior cervical muscles.',
-      imageUrl: 'https://www.health.harvard.edu/media/content/images/neck-stretch-flexion-extension-M.jpg',
-      steps: [
-        'Sit tall with a straight spine.',
-        'Gently drop your chin towards your chest (flexion). Hold for a breath.',
-        'Slowly lift your head and tilt it back to look at the ceiling (extension). Hold for a breath.',
-        'Repeat the movement slowly 5 times.'
+        'NECK ROLLS (HALF-CIRCLES): Gently drop chin to chest. Slowly roll right ear to right shoulder, then back to center and over to the left. Repeat 3-5 times.',
+        'SIDE STRETCHES: Tilt right ear to right shoulder, keeping the left shoulder down. Hold for 15-30 seconds, then switch sides.',
+        'FLEXION & EXTENSION: Gently drop your chin to your chest, then slowly tilt your head back to look at the ceiling. Repeat 5 times.',
+        'CHIN TUCKS: Keeping your gaze forward, gently draw your head straight back to create a double chin. Hold for 5 seconds and repeat 5-10 times.'
       ]
     },
     // SHOULDERS & UPPER BACK
