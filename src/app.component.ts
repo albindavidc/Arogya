@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, computed, effect, inject, Renderer2 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { PoseCategory, Pose } from './models/pose.model';
 import { PoseDetailModalComponent } from './pose-detail-modal.component';
 import { WarmUpComponent } from './warm-up.component';
@@ -10,6 +11,10 @@ import { WarmUpComponent } from './warm-up.component';
   imports: [PoseDetailModalComponent, WarmUpComponent],
 })
 export class AppComponent {
+  private renderer = inject(Renderer2);
+  // FIX: Explicitly type `document` to resolve type inference issue.
+  private document: Document = inject(DOCUMENT);
+
   selectedGender = signal<'female' | 'male'>('female');
   showWarmUpView = signal(false);
 
@@ -576,6 +581,17 @@ export class AppComponent {
   readonly topPoses = signal<Pose[]>(this.poseCategories().flatMap(c => c.poses).filter(p => [
       'Sarvangasana', 'Surya Namaskar', 'Navasana', 'Kapalbhati', 'Dhanurasana'
     ].includes(p.sanskritName)));
+
+  constructor() {
+    effect(() => {
+      const gender = this.selectedGender();
+      if (gender === 'male') {
+        this.renderer.addClass(this.document.body, 'male-theme');
+      } else {
+        this.renderer.removeClass(this.document.body, 'male-theme');
+      }
+    });
+  }
 
   setGender(gender: 'female' | 'male') {
     this.selectedGender.set(gender);

@@ -16,7 +16,7 @@ import { Pose } from './models/pose.model';
       class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div 
         (click)="$event.stopPropagation()"
-        class="bg-black/50 backdrop-blur-xl border border-[#B4A0E8]/20 rounded-2xl shadow-2xl shadow-[0_0_50px_rgba(180,160,232,0.15)] w-full max-w-3xl max-h-[90vh] flex flex-col md:flex-row animate-scale-in">
+        class="bg-black/50 backdrop-blur-xl border border-accent-20 rounded-2xl shadow-2xl shadow-[0_0_50px_rgba(180,160,232,0.15)] w-full max-w-3xl max-h-[90vh] flex flex-col md:flex-row animate-scale-in">
         
         <!-- Image Section -->
         <div 
@@ -29,7 +29,7 @@ import { Pose } from './models/pose.model';
             <div class="absolute left-3 bottom-3 z-20 grid grid-cols-2 gap-2">
               @for(imageUrl of leftThumbnails(); track imageUrl) {
                 <button (click)="$event.stopPropagation(); selectImage(imageUrl)" 
-                        [class]="'w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 transition-all duration-300 focus:outline-none ' + (selectedImageUrl() === imageUrl ? 'border-[#E8A0BF] scale-110' : 'border-transparent hover:border-white/50')">
+                        [class]="'w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 transition-all duration-300 focus:outline-none ' + (selectedImageUrl() === imageUrl ? 'border-primary-start scale-110' : 'border-transparent hover:border-white/50')">
                   <img [src]="imageUrl" [alt]="'Variation for ' + pose().englishName" width="48" height="48" class="w-full h-full object-cover">
                 </button>
               }
@@ -41,7 +41,7 @@ import { Pose } from './models/pose.model';
             <div class="absolute right-3 bottom-3 z-20 flex flex-col-reverse space-y-2 space-y-reverse">
               @for(imageUrl of rightThumbnails(); track imageUrl) {
                 <button (click)="$event.stopPropagation(); selectImage(imageUrl)" 
-                        [class]="'w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 transition-all duration-300 focus:outline-none ' + (selectedImageUrl() === imageUrl ? 'border-[#E8A0BF] scale-110' : 'border-transparent hover:border-white/50')">
+                        [class]="'w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border-2 transition-all duration-300 focus:outline-none ' + (selectedImageUrl() === imageUrl ? 'border-primary-start scale-110' : 'border-transparent hover:border-white/50')">
                   <img [src]="imageUrl" [alt]="'Variation for ' + pose().englishName" width="48" height="48" class="w-full h-full object-cover">
                 </button>
               }
@@ -67,10 +67,10 @@ import { Pose } from './models/pose.model';
         <!-- Content Section -->
         <div class="w-full md:w-1/2 flex flex-col min-h-0">
           <!-- Sticky Header -->
-          <div class="flex-shrink-0 p-6 pb-4 border-b border-[#B4A0E8]/15 bg-black/50 backdrop-blur-md z-10 rounded-tr-2xl">
+          <div class="flex-shrink-0 p-6 pb-4 border-b border-accent-20 bg-black/50 backdrop-blur-md z-10 rounded-tr-2xl">
             <div class="flex justify-between items-start">
               <div>
-                <h2 class="text-2xl font-bold text-[#E8A0BF] font-lora">{{ pose().sanskritName }}</h2>
+                <h2 class="text-2xl font-bold text-primary-start font-lora">{{ pose().sanskritName }}</h2>
                 <p class="text-[#B8B8C4]">{{ pose().englishName }}@if(pose().pronunciation) { ({{ pose().pronunciation }}) }</p>
               </div>
               <button 
@@ -87,7 +87,7 @@ import { Pose } from './models/pose.model';
             <div class="flex flex-col space-y-6 text-[#B8B8C4]">
               
               <div class="order-2 md:order-1">
-                <h3 class="font-bold text-[#B4A0E8] mb-2 border-b border-[#B4A0E8]/20 pb-1">How to Do It</h3>
+                <h3 class="font-bold text-accent mb-2 border-b border-accent-20 pb-1">How to Do It</h3>
                 <ul class="list-disc list-inside space-y-1 pl-2 text-sm">
                   @for(step of howToDoSteps(); track step) {
                     <li>{{ step }}</li>
@@ -97,7 +97,7 @@ import { Pose } from './models/pose.model';
 
               @if (pose().frequency.length > 0) {
                 <div class="order-1 md:order-2">
-                  <h3 class="font-bold text-[#B4A0E8] mb-2 border-b border-[#B4A0E8]/20 pb-1">Practice Guide</h3>
+                  <h3 class="font-bold text-accent mb-2 border-b border-accent-20 pb-1">Practice Guide</h3>
                   <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
                     @for(level of pose().frequency; track level.level) {
                       <div class="bg-black/30 rounded-lg p-2 border border-white/10 text-center">
@@ -127,7 +127,7 @@ import { Pose } from './models/pose.model';
 
               @if (pose().why.length > 0) {
                 <div class="order-3">
-                  <h3 class="font-bold text-[#B4A0E8] mb-2 border-b border-[#B4A0E8]/20 pb-1">Why This Helps</h3>
+                  <h3 class="font-bold text-accent mb-2 border-b border-accent-20 pb-1">Why This Helps</h3>
                   <ul class="list-disc list-inside space-y-1 pl-2 text-sm">
                     @for(item of pose().why; track item) {
                       <li>{{ item }}</li>

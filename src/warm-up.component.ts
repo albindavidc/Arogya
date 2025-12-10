@@ -20,7 +20,7 @@ interface WarmUpExercise {
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div class="flex justify-between items-center">
             <div>
-              <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#E8A0BF] via-[#B4A0E8] to-[#A0E8C8]">Warm-Up Routine</h1>
+              <h1 class="text-2xl font-bold text-gradient-primary">Warm-Up Routine</h1>
               <p class="text-[#6E6E7A] text-sm">Prepare your body for practice</p>
             </div>
             <button (click)="back.emit()" class="text-sm font-medium text-[#B8B8C4] hover:text-white transition-colors flex items-center gap-2">
