@@ -281,102 +281,79 @@ export class WarmUpComponent {
         'TABLETOP WRIST STRETCHES: On hands and knees, first place palms flat with fingers forward. Next, turn fingers to face your knees and gently rock back. Finally, place the back of your hands on the mat, fingers toward knees. Hold each position for 15-20 secs.'
       ]
     },
-    // SPINE & TORSO
+    // SPINE & TORSO (UPDATED)
     {
-      name: 'Cat-Cow Pose',
+      name: 'Spine Mobility Series 1',
       category: 'SPINE & TORSO',
-      description: 'Dynamic spinal flexion and extension that warms the entire vertebral column.',
-      imageUrl: 'https://cdn.yogajournal.com/wp-content/uploads/2021/11/Cat-Pose_Andrew-Clark_2400x1350-1-e1637604033202.jpg',
+      description: 'A comprehensive flow to awaken the spine, improve posture, and release tension through flexion, extension, twisting, and side bending.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine1.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine1.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-spine1.png?raw=true',
       steps: [
-        'Start on your hands and knees in a tabletop position.',
-        'Inhale as you drop your belly towards the mat, lifting your chin and chest (Cow Pose).',
-        'Exhale as you round your spine toward the ceiling, tucking your chin to your chest (Cat Pose).',
-        'Continue flowing between Cat and Cow for 5-10 breaths.'
+        'CAT POSE (MARJARYASANA): On hands and knees, exhale and round your spine toward the ceiling, tucking chin to chest.',
+        'COW POSE (BITILASANA): Inhale, drop belly toward mat, lift chin and chest, arching the back.',
+        'SEATED TORSO TWIST: Sit cross-legged. Inhale lengthen spine, exhale twist gently to one side. Repeat other side.',
+        'STANDING SIDE BEND: Stand tall, reach arms up. Lean to one side lengthening the side body. Switch.',
+        'SPINAL WAVE: From Child’s Pose, round forward into a modified plank/updog, then wave back.',
+        'PELVIC TILTS: Lie on back. Flatten lower back to mat (Posterior), then arch slightly (Anterior).',
+        'SUPINE SPINAL TWIST: Lie back, knees to chest, drop legs to one side, look opposite.'
       ]
     },
     {
-      name: 'Seated Torso Twists',
+      name: 'Spine Mobility Series 2 (Thread the Needle)',
       category: 'SPINE & TORSO',
-      description: 'Warms up the thoracic spine, obliques, and intercostal muscles.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/seated-torso-twist-exercise-illustration.jpg',
+      description: 'A gentle twist that opens the shoulders, upper back, and neck.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine2.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine2.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-spine2.png?raw=true',
       steps: [
-        'Sit comfortably on the floor with your legs crossed.',
-        'Place your right hand on your left knee and your left hand on the floor behind you.',
-        'Inhale to lengthen your spine, exhale to gently twist to the left.',
-        'Hold for a few breaths, then repeat on the other side.'
+        'Start in a tabletop position on hands and knees.',
+        'Inhale, reach your right arm high to the sky, opening the chest.',
+        'Exhale, slide your right arm under your left arm, bringing your right shoulder and cheek to the mat.',
+        'Hold for 5-10 breaths. Press into left hand to rise and switch sides.'
       ]
     },
+    // CORE & ABDOMEN (UPDATED)
     {
-      name: 'Standing Side Bends',
-      category: 'SPINE & TORSO',
-      description: 'Lateral spinal flexion that lengthens the quadratus lumborum, obliques, and intercostals.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/side-bend-stretch-exercise-illustration.jpg',
-      steps: [
-        'Stand tall with your feet hip-width apart.',
-        'Raise your right arm overhead.',
-        'Gently bend your torso to the left, feeling a stretch along your right side.',
-        'Hold for 15-20 seconds, then switch sides.'
-      ]
-    },
-    {
-      name: 'Spinal Waves',
-      category: 'SPINE & TORSO',
-      description: 'Fluid undulating movements through the entire spine, awakening segmental vertebral articulation.',
-      imageUrl: 'https://i.ytimg.com/vi/qDwYx-S2D6A/maxresdefault.jpg',
-      steps: [
-        'Start in a tabletop position.',
-        'Initiate a wave from your tailbone, moving sequentially through your spine to your head, like a Cat-Cow flow.',
-        'Make the movement fluid and continuous.',
-        'Explore forward and backward waves for 30-60 seconds.'
-      ]
-    },
-    {
-      name: 'Pelvic Tilts',
-      category: 'SPINE & TORSO',
-      description: 'Gentle tilting that warms the lumbar spine and activates the deep core.',
-      imageUrl: 'https://www.verywellhealth.com/thmb/x-OR1FBC9Yg6A_QDp9GjPz9-L1s=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Verywell-01-2696365-PelvicTilt-5994a2f803f4020010ddff17.gif',
-      steps: [
-        'Lie on your back with your knees bent and feet flat on the floor.',
-        'Gently flatten your lower back against the floor by engaging your core (posterior tilt).',
-        'Relax and allow a small arch to form in your lower back (anterior tilt).',
-        'Repeat this gentle rocking motion 10-15 times.'
-      ]
-    },
-    // CORE & ABDOMEN
-    {
-      name: 'Supine Knee-to-Chest',
+      name: 'Core Series 1: Stability & Activation',
       category: 'CORE & ABDOMEN',
-      description: 'Gentle compression that massages the abdominal organs and releases the lower back.',
-      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/11/Knees-to-Chest-Pose_Andrew-Clark_2400x1350-1-e1637599052695.jpeg',
+      description: 'Essential movements to activate the deep core, glutes, and stabilize the pelvis.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core1.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core1.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-core1.png?raw=true',
       steps: [
-        'Lie on your back.',
-        'Exhale and draw both knees to your chest.',
-        'Clasp your hands around your shins or thighs.',
-        'Gently rock side-to-side to massage your lower back. Hold for 30-60 seconds.'
+        'SUPINE KNEE TO CHEST: Lie on back, draw one or both knees to chest to release lower back.',
+        'BRIDGE LIFTS: Feet flat hip-width apart. Lift hips up, squeeze glutes, lower slowly. Repeat 10x.',
+        'BIRD DOG: On hands and knees, extend right arm forward and left leg back. Hold, keep core tight. Switch.',
+        'PLANK HOLD: High push-up position. Hands under shoulders, body in straight line. Hold 30-60s.',
+        'SIDE PLANK LEG RAISE: On forearm, lift hips. Optionally lift top leg. Switch sides.'
       ]
     },
     {
-      name: 'Reclined Twists',
+      name: 'Core Series 2: Strength & Obliques',
       category: 'CORE & ABDOMEN',
-      description: 'Rotational stretch for the obliques, spinal erectors, and outer hips.',
-      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/12/Supine-Spinal-Twist_Andrew-Clark_2400x1350-1.jpeg',
+      description: 'Dynamic exercises to build heat, strengthen the obliques, and tone the abdominal wall.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core2.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core2.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-core2.png?raw=true',
       steps: [
-        'Lie on your back and draw your knees to your chest.',
-        'Extend your arms out to a "T" shape.',
-        'Gently drop both knees to the right side, keeping your left shoulder on the ground.',
-        'Hold for 30 seconds, then repeat on the other side.'
+        'STANDING SIDE BENDS: Stand tall, reach one arm over, slide other hand down leg. Feel the oblique stretch.',
+        'SUPINE BICYCLE CRUNCHES: Lie on back, hands behind head. Elbow to opposite knee, extending other leg. Cycle.',
+        'SUPINE LEG LOWERS: Legs straight up towards ceiling. Lower them slowly toward mat without arching back, lift up.',
+        'HOLLOW BODY HOLD: Lie back, lift shoulders and legs slightly. Press lower back into mat. Hold.'
       ]
     },
     {
-      name: 'Bridge Lifts',
+      name: 'Core Series 3: Release',
       category: 'CORE & ABDOMEN',
-      description: 'Dynamic pelvic lifts that warm the glutes, hamstrings, and spinal extensors.',
-      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Bridge-Pose_Andrew-Clark_2400x1350-e1633534570119.jpeg',
+      description: 'A restorative movement to release tension in the spine and hips after core work.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core3.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core3.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-core3.png?raw=true',
       steps: [
-        'Lie on your back, knees bent, feet flat and hip-width apart.',
-        'Inhale and lift your hips off the floor.',
-        'Exhale and slowly lower your hips back down.',
-        'Repeat this dynamic lift 10-15 times.'
+        'WINDSHIELD WIPERS: Lie on your back, knees bent, feet wider than hips.',
+        'Drop both knees to the right, then to the left.',
+        'Continue this gentle rocking motion to release the lower back and hips.'
       ]
     },
     // HIPS & PELVIS
