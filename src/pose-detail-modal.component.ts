@@ -6,14 +6,14 @@ import { Pose } from './models/pose.model';
   template: `
     <div 
       (click)="close.emit()" 
-      class="fixed inset-0 bg-black/70 backdrop-blur-md z-40 animate-fade-in"
+      class="fixed inset-0 bg-black/70 backdrop-blur-md z-[70] animate-fade-in"
       aria-hidden="true">
     </div>
 
     <div 
       role="dialog" 
       aria-modal="true" 
-      class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      class="fixed inset-0 z-[80] flex items-center justify-center p-4">
       <div 
         (click)="$event.stopPropagation()"
         class="bg-black/50 backdrop-blur-xl border border-accent-20 rounded-2xl shadow-2xl shadow-[0_0_50px_rgba(180,160,232,0.15)] w-full max-w-3xl max-h-[90vh] flex flex-col md:flex-row animate-scale-in">
@@ -150,7 +150,7 @@ import { Pose } from './models/pose.model';
         (pointerdown)="onPointerDown($event)"
         (pointermove)="onPointerMove($event)"
         (pointerup)="onPointerUp($event)"
-        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center animate-fade-in"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] flex items-center justify-center animate-fade-in"
         [style.cursor]="zoomScale() > 1 ? 'grab' : 'zoom-out'">
         
         <img 
@@ -164,7 +164,7 @@ import { Pose } from './models/pose.model';
         <!-- Close Button -->
         <button 
           (click)="closeFullscreen()" 
-          class="absolute top-4 right-4 z-[70] p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+          class="absolute top-4 right-4 z-[100] p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
           aria-label="Close fullscreen image">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
@@ -172,7 +172,7 @@ import { Pose } from './models/pose.model';
         <!-- Reset Zoom Button -->
         <button 
           (click)="$event.stopPropagation(); resetZoom()" 
-          class="absolute bottom-4 right-4 z-[70] p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+          class="absolute bottom-4 right-4 z-[100] p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
           aria-label="Reset zoom">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M5 5h5V3H3v7h2V5zm14-2h-7v2h5v5h2V3zM5 19v-5H3v7h7v-2H5zm14 5h-7v-2h5v-5h2v7z"/></svg>
         </button>

@@ -6,10 +6,21 @@ interface WarmUpExercise {
   name: string;
   category: string;
   description: string;
+  benefit: string; // New field for the card tag
   imageUrl: string; // Fallback
   imageUrlFemale?: string;
   imageUrlMale?: string;
   steps: string[];
+}
+
+interface InstructionCategory {
+  title: string;
+  subTitle: string;
+  purpose: string;
+  instructions: string[];
+  duration: string;
+  appliedToText: string;
+  targetCategories: string[]; // Used to filter exercises
 }
 
 @Component({
@@ -35,54 +46,184 @@ interface WarmUpExercise {
 
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <!-- Warm-up overview section -->
-        <section class="mb-16 bg-black/30 border border-white/5 rounded-xl p-8">
+        <section class="mb-12 bg-black/30 border border-white/5 rounded-xl p-8">
             <h2 class="text-center text-3xl font-bold text-[#F4F4F8] mb-8">Full Warm-Up Library</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10 text-sm">
-                @for(category of exerciseCategories(); track category.name) {
-                    <div>
-                        <h3 class="font-bold text-[#A0E8C8] mb-3 text-base border-b border-[#A0E8C8]/20 pb-2">{{ category.name }}</h3>
-                        <ul class="space-y-2">
-                            @for(exercise of category.exercises; track exercise.name) {
-                                <li class="text-[#B8B8C4]">{{ exercise.name }}</li>
-                            }
-                        </ul>
-                    </div>
-                }
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-sm">
+                <!-- Upper Body List -->
+                <div>
+                   <h3 class="text-xl font-bold text-primary-start mb-6 border-b border-white/10 pb-2">Upper Body & Core</h3>
+                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      @for(category of upperBodyCategories(); track category.name) {
+                        <div>
+                            <h4 class="font-bold text-[#A0E8C8] mb-2 text-xs uppercase tracking-wider opacity-80">{{ category.name }}</h4>
+                            <ul class="space-y-1">
+                                @for(exercise of category.exercises; track exercise.name) {
+                                    <li class="text-[#B8B8C4] hover:text-white transition-colors cursor-pointer" (click)="scrollTo(category.name)">{{ exercise.name }}</li>
+                                }
+                            </ul>
+                        </div>
+                      }
+                   </div>
+                </div>
+                <!-- Lower Body List -->
+                <div>
+                   <h3 class="text-xl font-bold text-primary-end mb-6 border-b border-white/10 pb-2">Lower Body</h3>
+                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      @for(category of lowerBodyCategories(); track category.name) {
+                        <div>
+                            <h4 class="font-bold text-[#A0E8C8] mb-2 text-xs uppercase tracking-wider opacity-80">{{ category.name }}</h4>
+                            <ul class="space-y-1">
+                                @for(exercise of category.exercises; track exercise.name) {
+                                    <li class="text-[#B8B8C4] hover:text-white transition-colors cursor-pointer" (click)="scrollTo(category.name)">{{ exercise.name }}</li>
+                                }
+                            </ul>
+                        </div>
+                      }
+                   </div>
+                </div>
             </div>
         </section>
 
-        <!-- Warm-up cards -->
-        @for(category of exerciseCategories(); track category.name) {
-          <section [id]="category.name" class="mb-16">
-            <div class="mb-8">
-              <h2 class="text-2xl font-bold text-[#F4F4F8]">{{ category.name }}</h2>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              @for(exercise of category.exercises; track exercise.name) {
-                <div (click)="openModal(exercise)" 
-                     class="group relative transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
-                  <div class="holo-border-container h-full">
-                    <div class="bg-black/40 backdrop-blur-sm border border-white/5 rounded-xl h-full shadow-lg shadow-black/30 flex flex-col">
-                      <figure class="aspect-[4/3] overflow-hidden rounded-t-xl">
-                        <img [src]="gender() === 'male' && exercise.imageUrlMale ? exercise.imageUrlMale : (exercise.imageUrlFemale || exercise.imageUrl)" [alt]="exercise.name" width="400" height="300" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-                      </figure>
-                      <div class="p-5 flex flex-col flex-grow">
-                        <div>
-                          <h3 class="text-lg font-bold text-[#F4F4F8]">{{ exercise.name }}</h3>
-                        </div>
-                        <div class="mt-auto pt-4">
-                          <span class="inline-block bg-gradient-to-r from-[#A0E8C8]/5 to-[#A0C8E8]/5 border border-[#A0E8C8]/20 text-[#A0E8C8] text-xs font-medium px-3 py-1 rounded-full">
-                            {{ exercise.category }}
-                          </span>
+        <!-- General Movement Instructions Section -->
+        <section class="mb-20">
+          <div class="flex items-center gap-4 mb-8">
+             <h2 class="text-2xl font-bold text-[#F4F4F8]">General Movement Guidelines</h2>
+             <div class="h-px flex-1 bg-white/10"></div>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @for(instruction of generalInstructions; track instruction.title) {
+              <div class="bg-gradient-to-br from-white/5 to-white/[0.02] border border-white/10 rounded-xl p-5 hover:border-white/20 transition-all duration-300 group relative">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 class="font-bold text-[#F4F4F8] text-lg">{{ instruction.title }}</h3>
+                    <p class="text-xs font-medium text-accent uppercase tracking-wider">{{ instruction.subTitle }}</p>
+                  </div>
+                   <button (click)="openInstructionModal(instruction)" 
+                           class="w-8 h-8 rounded-full bg-white/10 hover:bg-accent/20 text-[#B8B8C4] hover:text-accent border border-white/5 hover:border-accent/50 flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent/50"
+                           aria-label="See applied exercises">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                       <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                     </svg>
+                   </button>
+                </div>
+                
+                <p class="text-xs text-[#B8B8C4] mb-4 italic leading-relaxed border-l-2 border-white/10 pl-3">
+                  "{{ instruction.purpose }}"
+                </p>
+                
+                <div class="mb-4">
+                  <h4 class="text-[10px] uppercase text-[#6E6E7A] font-bold mb-2">Key Instructions</h4>
+                  <ul class="space-y-1.5">
+                    @for(step of instruction.instructions; track step) {
+                      <li class="flex items-start gap-2 text-xs text-[#B8B8C4]">
+                        <span class="mt-1 w-1 h-1 rounded-full bg-accent flex-shrink-0"></span>
+                        <span>{{ step }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+
+                <div class="pt-3 border-t border-white/5 flex items-center gap-2">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-accent" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="text-xs font-semibold text-[#F4F4F8]">{{ instruction.duration }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Upper Body Section -->
+        <div class="mb-20">
+          <div class="flex items-center gap-4 mb-10">
+             <div class="h-px flex-1 bg-gradient-to-r from-transparent to-white/20"></div>
+             <h2 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#E8A0BF] to-[#B4A0E8]">Upper Body & Core</h2>
+             <div class="h-px flex-1 bg-gradient-to-l from-transparent to-white/20"></div>
+          </div>
+          
+          @for(category of upperBodyCategories(); track category.name) {
+            <section [id]="category.name" class="mb-16 scroll-mt-24">
+              <div class="mb-6 flex items-baseline gap-3">
+                <h3 class="text-xl font-bold text-[#F4F4F8]">{{ category.name }}</h3>
+                <span class="h-px flex-1 bg-white/5"></span>
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                @for(exercise of category.exercises; track exercise.name) {
+                  <div (click)="openModal(exercise)" 
+                       class="group relative transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
+                    <div class="holo-border-container h-full">
+                      <div class="bg-black/40 backdrop-blur-sm border border-white/5 rounded-xl h-full shadow-lg shadow-black/30 flex flex-col">
+                        <figure class="aspect-[4/3] overflow-hidden rounded-t-xl">
+                          <img [src]="gender() === 'male' && exercise.imageUrlMale ? exercise.imageUrlMale : (exercise.imageUrlFemale || exercise.imageUrl)" [alt]="exercise.name" width="400" height="300" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                        </figure>
+                        <div class="p-5 flex flex-col flex-grow">
+                          <div class="mb-3">
+                            <h4 class="text-lg font-bold text-[#F4F4F8] leading-tight">{{ exercise.name }}</h4>
+                          </div>
+                          <div class="mt-auto">
+                            <span class="inline-flex items-center gap-1.5 bg-[#A0E8C8]/10 border border-[#A0E8C8]/20 text-[#A0E8C8] text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                              </svg>
+                              {{ exercise.benefit }}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              }
-            </div>
-          </section>
-        }
+                }
+              </div>
+            </section>
+          }
+        </div>
+
+        <!-- Lower Body Section -->
+        <div class="mb-12">
+          <div class="flex items-center gap-4 mb-10">
+             <div class="h-px flex-1 bg-gradient-to-r from-transparent to-white/20"></div>
+             <h2 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#A0E8C8] to-[#A0C8E8]">Lower Body</h2>
+             <div class="h-px flex-1 bg-gradient-to-l from-transparent to-white/20"></div>
+          </div>
+
+          @for(category of lowerBodyCategories(); track category.name) {
+            <section [id]="category.name" class="mb-16 scroll-mt-24">
+              <div class="mb-6 flex items-baseline gap-3">
+                <h3 class="text-xl font-bold text-[#F4F4F8]">{{ category.name }}</h3>
+                <span class="h-px flex-1 bg-white/5"></span>
+              </div>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                @for(exercise of category.exercises; track exercise.name) {
+                  <div (click)="openModal(exercise)" 
+                       class="group relative transition-all duration-300 hover:-translate-y-1.5 cursor-pointer">
+                    <div class="holo-border-container h-full">
+                      <div class="bg-black/40 backdrop-blur-sm border border-white/5 rounded-xl h-full shadow-lg shadow-black/30 flex flex-col">
+                        <figure class="aspect-[4/3] overflow-hidden rounded-t-xl">
+                          <img [src]="gender() === 'male' && exercise.imageUrlMale ? exercise.imageUrlMale : (exercise.imageUrlFemale || exercise.imageUrl)" [alt]="exercise.name" width="400" height="300" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                        </figure>
+                        <div class="p-5 flex flex-col flex-grow">
+                          <div class="mb-3">
+                            <h4 class="text-lg font-bold text-[#F4F4F8] leading-tight">{{ exercise.name }}</h4>
+                          </div>
+                          <div class="mt-auto">
+                            <span class="inline-flex items-center gap-1.5 bg-[#A0C8E8]/10 border border-[#A0C8E8]/20 text-[#A0C8E8] text-[10px] sm:text-xs font-semibold px-2.5 py-1 rounded-md uppercase tracking-wide">
+                               <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                              </svg>
+                              {{ exercise.benefit }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+        </div>
       </main>
 
        <footer class="bg-black/20 border-t border-white/5 text-[#6E6E7A] mt-16">
@@ -92,6 +233,63 @@ interface WarmUpExercise {
         </footer>
     </div>
 
+    <!-- Instruction Details Modal -->
+    @if (selectedInstruction(); as instruction) {
+      <div (click)="closeInstructionModal()" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[60] animate-fade-in flex items-center justify-center p-4">
+        <div (click)="$event.stopPropagation()" class="bg-black/80 border border-white/10 rounded-2xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl animate-scale-in overflow-hidden">
+          
+          <!-- Modal Header -->
+          <div class="p-6 border-b border-white/10 bg-black/50 backdrop-blur-xl flex justify-between items-start sticky top-0 z-10">
+            <div>
+              <h3 class="text-2xl font-bold text-white mb-1">{{ instruction.title }}</h3>
+              <p class="text-accent text-sm font-medium uppercase tracking-wider">{{ instruction.subTitle }}</p>
+            </div>
+             <button (click)="closeInstructionModal()" class="text-[#B8B8C4] hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+             </button>
+          </div>
+
+          <!-- Modal Content -->
+          <div class="p-6 overflow-y-auto custom-scrollbar">
+             <!-- Applied To Section -->
+             <div class="mb-8">
+               <h4 class="text-sm font-bold text-[#6E6E7A] uppercase mb-3">Applied Body Parts</h4>
+               <p class="text-[#F4F4F8] text-base leading-relaxed">{{ instruction.appliedToText }}</p>
+             </div>
+
+             <!-- Matching Exercises Grid -->
+             <div>
+               <h4 class="text-sm font-bold text-[#6E6E7A] uppercase mb-4 flex items-center gap-2">
+                 Recommended Exercises
+                 <span class="bg-white/10 text-white text-[10px] px-2 py-0.5 rounded-full">{{ relatedExercises().length }}</span>
+               </h4>
+               
+               @if (relatedExercises().length > 0) {
+                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                   @for(exercise of relatedExercises(); track exercise.name) {
+                      <div (click)="openModal(exercise)" class="bg-white/5 border border-white/5 rounded-xl p-3 hover:bg-white/10 hover:border-accent/30 transition-all cursor-pointer flex gap-3 items-center group">
+                        <img [src]="gender() === 'male' && exercise.imageUrlMale ? exercise.imageUrlMale : (exercise.imageUrlFemale || exercise.imageUrl)" 
+                             class="w-16 h-16 rounded-lg object-cover bg-black/50" 
+                             alt="Thumbnail">
+                        <div>
+                          <h5 class="font-bold text-white text-sm group-hover:text-accent transition-colors line-clamp-2">{{ exercise.name }}</h5>
+                          <span class="text-[10px] text-[#6E6E7A] uppercase mt-1 block">{{ exercise.category }}</span>
+                        </div>
+                      </div>
+                   }
+                 </div>
+               } @else {
+                 <p class="text-[#6E6E7A] italic text-sm">No specific exercises found matching this category directly.</p>
+               }
+             </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Exercise Detail Modal -->
     @if (selectedExercise(); as exercise) {
       <app-pose-detail-modal 
         [pose]="exercise" 
@@ -109,7 +307,8 @@ export class WarmUpComponent {
   back = output<void>();
   gender = input.required<'female' | 'male'>();
 
-  selectedExerciseIndex = signal<number | null>(null);
+  activeExercise = signal<WarmUpExercise | null>(null);
+  selectedInstruction = signal<InstructionCategory | null>(null);
 
   readonly exerciseCategories = computed(() => {
     const categories = new Map<string, WarmUpExercise[]>();
@@ -122,12 +321,47 @@ export class WarmUpComponent {
     return Array.from(categories.entries()).map(([name, exercises]) => ({ name, exercises }));
   });
 
+  // Define classification keys
+  readonly upperBodyKeys = new Set([
+    'EYES', 'FACE & JAW', 'HEAD & NECK', 'SHOULDERS & UPPER BACK', 
+    'ARMS, WRISTS & HANDS', 'SPINE & TORSO', 'CORE & ABDOMEN'
+  ]);
+
+  readonly lowerBodyKeys = new Set([
+    'HIPS & PELVIS', 'LEGS & THIGHS', 'KNEES & LOWER LEGS', 'ANKLES & FEET'
+  ]);
+
+  readonly upperBodyCategories = computed(() => {
+    return this.exerciseCategories().filter(c => this.upperBodyKeys.has(c.name));
+  });
+
+  readonly lowerBodyCategories = computed(() => {
+    return this.exerciseCategories().filter(c => this.lowerBodyKeys.has(c.name));
+  });
+
+  readonly relatedExercises = computed(() => {
+    const instruction = this.selectedInstruction();
+    if (!instruction) return [];
+    
+    // Filter exercises whose category matches the target categories of the instruction
+    return this.warmUpExercises.filter(ex => 
+      instruction.targetCategories.includes(ex.category)
+    );
+  });
+
+  // Determine the current navigation list context
+  readonly currentExerciseList = computed(() => {
+     if (this.selectedInstruction()) {
+         return this.relatedExercises();
+     }
+     return this.warmUpExercises;
+  });
+
   readonly selectedExercise = computed(() => {
-    const index = this.selectedExerciseIndex();
-    if (index === null) {
+    const exercise = this.activeExercise();
+    if (!exercise) {
       return null;
     }
-    const exercise = this.warmUpExercises[index];
     const currentGender = this.gender();
     const imageUrl = currentGender === 'male' && exercise.imageUrlMale 
       ? exercise.imageUrlMale 
@@ -147,39 +381,198 @@ export class WarmUpComponent {
   });
 
   openModal(exercise: WarmUpExercise): void {
-    const index = this.warmUpExercises.findIndex(ex => ex.name === exercise.name);
-    if (index !== -1) {
-      this.selectedExerciseIndex.set(index);
-    }
+    this.activeExercise.set(exercise);
   }
 
   closeModal(): void {
-    this.selectedExerciseIndex.set(null);
+    this.activeExercise.set(null);
+  }
+
+  openInstructionModal(instruction: InstructionCategory): void {
+    this.selectedInstruction.set(instruction);
+  }
+
+  closeInstructionModal(): void {
+    this.selectedInstruction.set(null);
+  }
+
+  scrollTo(id: string): void {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   goToNextExercise(): void {
-    const currentIndex = this.selectedExerciseIndex();
-    if (currentIndex !== null) {
-      const total = this.warmUpExercises.length;
-      const nextIndex = (currentIndex + 1) % total;
-      this.selectedExerciseIndex.set(nextIndex);
+    const current = this.activeExercise();
+    const list = this.currentExerciseList();
+    if (current && list.length > 0) {
+      const idx = list.indexOf(current);
+      if (idx !== -1) {
+        const nextIdx = (idx + 1) % list.length;
+        this.activeExercise.set(list[nextIdx]);
+      }
     }
   }
 
   goToPreviousExercise(): void {
-    const currentIndex = this.selectedExerciseIndex();
-    if (currentIndex !== null) {
-      const total = this.warmUpExercises.length;
-      const prevIndex = (currentIndex - 1 + total) % total;
-      this.selectedExerciseIndex.set(prevIndex);
+    const current = this.activeExercise();
+    const list = this.currentExerciseList();
+    if (current && list.length > 0) {
+      const idx = list.indexOf(current);
+      if (idx !== -1) {
+        const prevIdx = (idx - 1 + list.length) % list.length;
+        this.activeExercise.set(list[prevIdx]);
+      }
     }
   }
+
+  readonly generalInstructions: InstructionCategory[] = [
+    {
+      title: 'Rotational Movements',
+      subTitle: 'Circles',
+      purpose: 'Lubricate joints, increase synovial fluid, warm musculature',
+      instructions: [
+        '8-10 complete circles each direction',
+        'Move slowly and controlled',
+        'Maintain continuous movement',
+        'Breathing: Natural, steady breath'
+      ],
+      duration: '30-45s per joint',
+      appliedToText: 'Ankles, wrists, shoulders, hips, knees, neck',
+      targetCategories: ['ANKLES & FEET', 'ARMS, WRISTS & HANDS', 'SHOULDERS & UPPER BACK', 'HIPS & PELVIS', 'KNEES & LOWER LEGS', 'HEAD & NECK']
+    },
+    {
+      title: 'Static Holds',
+      subTitle: 'Stretches',
+      purpose: 'Lengthen muscles, increase flexibility, release tension',
+      instructions: [
+        'Hold 15-30s (beginner) or 30-60s (adv)',
+        'Relax into stretch on exhale',
+        'Find your edge without pain',
+        'Avoid bouncing'
+      ],
+      duration: '15-60s per hold',
+      appliedToText: 'Hamstrings, hip flexors, quadriceps, calves, chest, shoulders, spine',
+      targetCategories: ['LEGS & THIGHS', 'HIPS & PELVIS', 'KNEES & LOWER LEGS', 'SHOULDERS & UPPER BACK', 'SPINE & TORSO']
+    },
+    {
+      title: 'Dynamic Movements',
+      subTitle: 'Repetitions',
+      purpose: 'Increase blood flow, active warming, improve mobility',
+      instructions: [
+        '10-15 reps per side',
+        'Controlled rhythm and tempo',
+        'Coordinate with breath',
+        'Gradually increase range of motion'
+      ],
+      duration: '45-60s per exercise',
+      appliedToText: 'Leg swings, arm circles, cat-cow, torso twists, lunges',
+      targetCategories: ['LEGS & THIGHS', 'SHOULDERS & UPPER BACK', 'SPINE & TORSO', 'HIPS & PELVIS']
+    },
+    {
+      title: 'Pulsing Movements',
+      subTitle: 'Mini Reps',
+      purpose: 'Activate muscles, build endurance, deepen stretch',
+      instructions: [
+        '20-30 small pulsing movements',
+        'Small range (1-2 inches)',
+        'Maintain continuous tension',
+        'Breathe naturally'
+      ],
+      duration: '30-45s',
+      appliedToText: 'Plank pulses, squat pulses, calf raises, toe taps',
+      targetCategories: ['CORE & ABDOMEN', 'KNEES & LOWER LEGS', 'ANKLES & FEET']
+    },
+    {
+      title: 'Isometric Holds',
+      subTitle: 'Activation',
+      purpose: 'Build strength, improve stability, activate muscles',
+      instructions: [
+        'Hold for 10-30 seconds',
+        'Engage at 70-80% max effort',
+        'Do not hold your breath',
+        'Rest 10-15s between holds'
+      ],
+      duration: '10-30s per hold',
+      appliedToText: 'Plank holds, wall sits, chair pose, warrior holds, balance poses',
+      targetCategories: ['CORE & ABDOMEN', 'LEGS & THIGHS', 'SHOULDERS & UPPER BACK']
+    },
+    {
+      title: 'Rocking / Shifting',
+      subTitle: 'Balance',
+      purpose: 'Improve balance, warm stabilizers, develop proprioception',
+      instructions: [
+        '15-20 controlled rocks/shifts',
+        'Move slowly with intention',
+        'Pause briefly at end range',
+        'Keep core engaged'
+      ],
+      duration: '45-60s',
+      appliedToText: 'Heel-toe rocks, weight shifts in lunges, side-to-side sways',
+      targetCategories: ['ANKLES & FEET', 'HIPS & PELVIS', 'SPINE & TORSO']
+    },
+    {
+      title: 'Flexion & Extension',
+      subTitle: 'Alternating',
+      purpose: 'Warm antagonist pairs, establish range of motion',
+      instructions: [
+        '12-15 complete cycles',
+        'Move through full range',
+        'Inhale one way, exhale other',
+        'Smooth transitions'
+      ],
+      duration: '45-60s',
+      appliedToText: 'Foot flexion/extension, wrist flexion/extension, spinal flexion/extension',
+      targetCategories: ['ANKLES & FEET', 'ARMS, WRISTS & HANDS', 'SPINE & TORSO']
+    },
+    {
+      title: 'Spreading & Contracting',
+      subTitle: 'Dexterity',
+      purpose: 'Activate small intrinsic muscles, improve control',
+      instructions: [
+        '10-15 complete cycles',
+        'Emphasize max spread & contraction',
+        'Pause briefly at extremes',
+        'Focus on target area'
+      ],
+      duration: '30-45s',
+      appliedToText: 'Toe splays, finger spreads, shoulder blade squeezes',
+      targetCategories: ['ANKLES & FEET', 'ARMS, WRISTS & HANDS', 'SHOULDERS & UPPER BACK']
+    },
+    {
+      title: 'Lifting & Lowering',
+      subTitle: 'Controlled Raises',
+      purpose: 'Build strength, improve control, warm specific groups',
+      instructions: [
+        '12-15 controlled lifts',
+        '2-3s up, 2-3s down',
+        'Avoid momentum',
+        'Maintain alignment'
+      ],
+      duration: '45-60s',
+      appliedToText: 'Leg raises, arm raises, shoulder shrugs, calf raises',
+      targetCategories: ['CORE & ABDOMEN', 'LEGS & THIGHS', 'SHOULDERS & UPPER BACK', 'KNEES & LOWER LEGS']
+    },
+    {
+      title: 'Drawing / Tracing',
+      subTitle: 'Coordination',
+      purpose: 'Improve coordination, increase range, refine motor control',
+      instructions: [
+        'Trace shapes (circles, 8s, alphabet)',
+        '5-8 tracings per direction',
+        'Move slowly and precisely',
+        'Keep body stable'
+      ],
+      duration: '45-60s',
+      appliedToText: 'Ankle alphabet, wrist circles, hip circles, nose/chin tracings for neck',
+      targetCategories: ['ANKLES & FEET', 'ARMS, WRISTS & HANDS', 'HIPS & PELVIS', 'HEAD & NECK']
+    }
+  ];
 
   readonly warmUpExercises: WarmUpExercise[] = [
     // EYES
     {
       name: 'Eye Warm-Up Series',
       category: 'EYES',
+      benefit: 'Improves Focus & Vision',
       description: 'A comprehensive series of movements to strengthen eye muscles, relieve strain from screen time, and improve focus, peripheral awareness, and overall ocular coordination.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-eye.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-eye.png?raw=true',
@@ -192,10 +585,11 @@ export class WarmUpComponent {
         'PALMING (REST): Rub palms to create warmth, then gently cup them over closed eyes for 30-60 seconds to relax.'
       ]
     },
-    // FACE & JAW (UPDATED)
+    // FACE & JAW
     {
       name: 'Face & Jaw Relaxation Series',
       category: 'FACE & JAW',
+      benefit: 'Releases Tension',
       description: 'A complete routine to release tension in the jaw, face, and sinuses, improving circulation and relaxation.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-face.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-face.png?raw=true',
@@ -213,6 +607,7 @@ export class WarmUpComponent {
     {
       name: 'Head & Neck Series',
       category: 'HEAD & NECK',
+      benefit: 'Corrects Posture',
       description: 'A complete sequence to release tension, improve flexibility, and correct posture in the neck and upper shoulders.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-head.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-head.png?raw=true',
@@ -228,6 +623,7 @@ export class WarmUpComponent {
     {
       name: 'Full Shoulder Mobility Series',
       category: 'SHOULDERS & UPPER BACK',
+      benefit: 'Mobility & Stability',
       description: 'A comprehensive routine combining dynamic rotations, static stretches, and activation poses to fully prepare the shoulder girdle, improve mobility, and build stability for your practice.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-shoulder.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-shoulder.png?raw=true',
@@ -248,6 +644,7 @@ export class WarmUpComponent {
     {
       name: 'Full Arm, Wrist & Hand Series',
       category: 'ARMS, WRISTS & HANDS',
+      benefit: 'Joint Lubrication',
       description: 'A complete sequence to lubricate joints, increase flexibility, and activate the muscles from your fingertips to your elbows, preparing them for weight-bearing poses.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-wrist.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-wrist.png?raw=true',
@@ -264,6 +661,7 @@ export class WarmUpComponent {
     {
       name: 'Spine Mobility Series 1',
       category: 'SPINE & TORSO',
+      benefit: 'Awakens The Spine',
       description: 'A comprehensive flow to awaken the spine, improve posture, and release tension through flexion, extension, twisting, and side bending.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine1.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine1.png?raw=true',
@@ -281,6 +679,7 @@ export class WarmUpComponent {
     {
       name: 'Spine Mobility Series 2 (Thread the Needle)',
       category: 'SPINE & TORSO',
+      benefit: 'Opens Shoulders',
       description: 'A gentle twist that opens the shoulders, upper back, and neck.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine2.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-spine2.png?raw=true',
@@ -296,6 +695,7 @@ export class WarmUpComponent {
     {
       name: 'Core Series 1: Stability & Activation',
       category: 'CORE & ABDOMEN',
+      benefit: 'Activates Deep Core',
       description: 'Essential movements to activate the deep core, glutes, and stabilize the pelvis.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core1.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core1.png?raw=true',
@@ -311,6 +711,7 @@ export class WarmUpComponent {
     {
       name: 'Core Series 2: Strength & Obliques',
       category: 'CORE & ABDOMEN',
+      benefit: 'Builds Heat',
       description: 'Dynamic exercises to build heat, strengthen the obliques, and tone the abdominal wall.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core2.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core2.png?raw=true',
@@ -325,6 +726,7 @@ export class WarmUpComponent {
     {
       name: 'Core Series 3: Release',
       category: 'CORE & ABDOMEN',
+      benefit: 'Releases Back',
       description: 'A restorative movement to release tension in the spine and hips after core work.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core3.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-core3.png?raw=true',
@@ -335,10 +737,11 @@ export class WarmUpComponent {
         'Continue this gentle rocking motion to release the lower back and hips.'
       ]
     },
-    // HIPS & PELVIS (UPDATED)
+    // HIPS & PELVIS
     {
       name: 'Hip & Pelvis Series 1: Mobility & Opening',
       category: 'HIPS & PELVIS',
+      benefit: 'Opens Hips & Flexors',
       description: 'A dynamic sequence to lubricate the hip joints and open the adductors and hip flexors.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-hip1.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-hip1.png?raw=true',
@@ -353,6 +756,7 @@ export class WarmUpComponent {
     {
       name: 'Hip & Pelvis Series 2: Deep Release',
       category: 'HIPS & PELVIS',
+      benefit: 'Tension Release',
       description: 'Targeted stretches for the rotators and outer hips to release deep-seated tension.',
       imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-hip2.png?raw=true',
       imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-hip2.png?raw=true',
@@ -364,161 +768,68 @@ export class WarmUpComponent {
     },
     // LEGS & THIGHS
     {
-      name: 'Downward-Facing Dog',
+      name: 'Leg Series',
       category: 'LEGS & THIGHS',
-      description: 'Full-body stretch energizing the arms, shoulders, spine, hamstrings, and calves.',
-      imageUrl: 'https://cdn.yogajournal.com/wp-content/uploads/2021/11/Downward-Facing-Dog_Andrew-Clark_2400x1350-2.jpg',
+      benefit: 'Leg Strength',
+      description: 'A comprehensive leg routine activating hamstrings, quads, and improving stability.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-leg.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-leg.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-leg.png?raw=true',
       steps: [
-        'From tabletop, curl your toes and lift your hips up and back.',
-        'Form an inverted "V" shape with your body.',
-        'Press your hands firmly into the mat and keep your head between your upper arms.',
-        '"Pedal" your feet by bending one knee and then the other to stretch your hamstrings.'
-      ]
-    },
-    {
-      name: 'Standing Forward Fold',
-      category: 'LEGS & THIGHS',
-      description: 'Lengthens the entire posterior chain including hamstrings, calves, and spinal erectors.',
-      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/11/Standing-Forward-Bend_Andrew-Clark_2400x1350-1-e1637603373199.jpeg',
-      steps: [
-        'Stand with feet hip-width apart.',
-        'Exhale and hinge at your hips, keeping your back straight.',
-        'Let your head hang heavy and bend your knees as much as needed.',
-        'Hold for 30 seconds, breathing into your hamstrings.'
-      ]
-    },
-    {
-      name: 'Pyramid Pose Prep',
-      category: 'LEGS & THIGHS',
-      description: 'Targeted hamstring and calf stretch with hip-squaring alignment.',
-      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Pyramid-Pose_Andrew-Clark_2400x1350-2.jpeg',
-      steps: [
-        'Take a staggered stance, right foot forward, left foot back about 3 feet.',
-        'Square your hips to the front.',
-        'Hinge at your hips and fold over your front leg with a flat back.',
-        'Hold for 20-30 seconds and switch sides.'
-      ]
-    },
-    {
-      name: 'Leg Swings (Front-to-Back)',
-      category: 'LEGS & THIGHS',
-      description: 'Dynamic movements warming the hip flexors and hamstrings.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/front-and-back-leg-swings-exercise-illustration.jpg',
-      steps: [
-        'Stand holding onto a wall or chair for support.',
-        'Swing your right leg forward and backward in a controlled motion.',
-        'Keep your torso upright and core engaged.',
-        'Perform 10-15 swings, then switch legs.'
-      ]
-    },
-    {
-      name: 'Leg Swings (Side-to-Side)',
-      category: 'LEGS & THIGHS',
-      description: 'Lateral dynamic stretches warming the adductors and abductors.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/side-leg-swings-exercise-illustration.jpg',
-      steps: [
-        'Stand facing a wall or chair for support.',
-        'Swing your right leg from side to side in front of your body.',
-        'Keep the movement controlled, focusing on the inner and outer thigh.',
-        'Perform 10-15 swings, then switch legs.'
-      ]
-    },
-    {
-      name: 'Chair Pose (Utkatasana)',
-      category: 'LEGS & THIGHS',
-      description: 'Activates and warms the quadriceps, glutes, and core while building heat.',
-      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/10/Chair-Pose_Andrew-Clark_2400x1350-1-e1633537299395.jpeg',
-      steps: [
-        'Stand with feet together or hip-width apart.',
-        'Inhale and raise your arms overhead.',
-        'Exhale and bend your knees, sitting back as if in an imaginary chair.',
-        'Keep your core engaged and chest lifted. Hold for 20-30 seconds.'
+        'DOWNWARD-FACING DOG: Inverted V-shape to stretch the entire back body.',
+        'PYRAMID POSE PREP: Hinge at hips with one leg forward to target hamstrings.',
+        'LEG WINGS (Front-to-Back): Dynamic movement to loosen hip flexors.',
+        'LEG WINGS (Side-to-Side): Dynamic lateral movement for adductors/abductors.',
+        'CHAIR POSE: Sit back to activate quads and glutes.'
       ]
     },
     // KNEES & LOWER LEGS
     {
-      name: 'Knee Circles',
+      name: 'Knee Series 1',
       category: 'KNEES & LOWER LEGS',
-      description: 'Gentle rotational movements lubricating the knee joint.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/02/knee-circles-exercise-illustration.jpg',
+      benefit: 'Joint Strength',
+      description: 'Strengthening and lubricating the knee joints with dynamic movements.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-knee.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-knee.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-knee.png?raw=true',
       steps: [
-        'Stand with your feet together and bend your knees slightly.',
-        'Place your hands on your knees.',
-        'Gently rotate your knees in a circular motion.',
-        'Perform 10 circles clockwise, then 10 counterclockwise.'
+        'KNEE CIRCLES: Gentle rotations with hands on knees.',
+        'CALF RAISES: Lift heels to strengthen calves.',
+        'STANDING QUAD STRETCH: Pull heel to glute.',
+        'LEG HIP ROTATION: Rotate the entire leg from the hip socket.',
+        'SUMO SQUAT + CALF RAISES: Wide stance squat with heel lifts.',
+        'PLIE SQUAT PULSES: Small pulsing movements in a wide squat.'
       ]
     },
     {
-      name: 'Calf Raises',
+      name: 'Knee Series 2',
       category: 'KNEES & LOWER LEGS',
-      description: 'Activates the gastrocnemius and soleus, warming the Achilles tendon.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/calf-raises-exercise-illustration.jpg',
+      benefit: 'Deep Mobility',
+      description: 'Deep stretching and mobility work for the lower body.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-knee2.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-knee2.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-knee2.png?raw=true',
       steps: [
-        'Stand with your feet hip-width apart.',
-        'Slowly raise your heels off the ground, coming onto the balls of your feet.',
-        'Hold for a moment at the top, then slowly lower your heels back down.',
-        'Repeat 15-20 times.'
-      ]
-    },
-    {
-      name: 'Standing Quad Stretch',
-      category: 'KNEES & LOWER LEGS',
-      description: 'Lengthens the quadriceps and hip flexors while improving balance.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/standing-quad-stretch-exercise-illustration.jpg',
-      steps: [
-        'Stand on one leg, holding onto a wall for balance if needed.',
-        'Grab your right foot with your right hand and gently pull your heel towards your glute.',
-        'Keep your knees together and stand up tall.',
-        'Hold for 20-30 seconds, then switch legs.'
+        'KNEE CIRCLES ROTATION: Additional knee joint lubrication.',
+        'STANDING SINGLE KNEE TO CHEST: Balance and hip flexor compression.',
+        'COSSACK SQUAT STRETCH: Side lunge for inner thighs and hamstrings.',
+        'HAMSTRING STRETCH: Seated or standing forward fold variation.'
       ]
     },
     // ANKLES & FEET
     {
-      name: 'Ankle Circles',
+      name: 'Feet Series',
       category: 'ANKLES & FEET',
-      description: 'Rotational movements lubricating the talocrural joint.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2015/01/ankle-circles-exercise-illustration.jpg',
+      benefit: 'Balance & Grounding',
+      description: 'Foundation work for balance and foot health.',
+      imageUrl: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-feet.png?raw=true',
+      imageUrlFemale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/women/warm-up/f-feet.png?raw=true',
+      imageUrlMale: 'https://github.com/albindavidc/arogya-resources/blob/main/public/men/warm-up/m-feet.png?raw=true',
       steps: [
-        'Sit on the floor or in a chair.',
-        'Extend one leg and slowly rotate your ankle in a circle.',
-        'Make 10 circles in one direction, then 10 in the other.',
-        'Repeat with the other ankle.'
-      ]
-    },
-    {
-      name: 'Toe Stretch (Kneeling)',
-      category: 'ANKLES & FEET',
-      description: 'Extends and warms the plantar fascia, toe flexors, and intrinsic foot muscles.',
-      imageUrl: 'https://www.yogajournal.com/wp-content/uploads/2021/12/Toes-Pose_Andrew-Clark_2400x1350-1.jpeg',
-      steps: [
-        'Kneel on the floor with your toes tucked under.',
-        'Gently sit back on your heels.',
-        'You should feel a deep stretch in the soles of your feet.',
-        'Hold for 20-40 seconds.'
-      ]
-    },
-    {
-      name: 'Foot Flexion and Extension',
-      category: 'ANKLES & FEET',
-      description: 'Alternating dorsiflexion and plantarflexion to warm the tibialis anterior and calf muscles.',
-      imageUrl: 'https://www.spotebi.com/wp-content/uploads/2014/10/ankle-dorsiflexion-plantar-flexion-exercise-illustration.jpg',
-      steps: [
-        'Sit with your legs extended in front of you.',
-        'Point your toes away from you (plantarflexion) and hold for 5 seconds.',
-        'Flex your feet, pulling your toes back towards you (dorsiflexion) and hold for 5 seconds.',
-        'Repeat 10-15 times.'
-      ]
-    },
-    {
-      name: 'Toe Splays and Scrunches',
-      category: 'ANKLES & FEET',
-      description: 'Activates the intrinsic foot muscles, improving foot dexterity and grounding awareness.',
-      imageUrl: 'https://i.ytimg.com/vi/b3f-D-igk2U/maxresdefault.jpg',
-      steps: [
-        'Sit or stand comfortably.',
-        'Lift your toes and spread them as wide apart as possible. Hold for 5 seconds.',
-        'Lower your toes and then scrunch them, as if trying to pick up a towel. Hold for 5 seconds.',
-        'Repeat this sequence 5-10 times.'
+        'ANGLE CIRCLES: Rotate ankles in both directions.',
+        'FOOT FLEXION AND EXTENSION: Point and flex the toes.',
+        'TOE STRETCH: Tuck toes under while kneeling.',
+        'TOE SPLAYS AND SCRUNCHES: Spread toes wide, then curl them tightly.'
       ]
     }
   ];
